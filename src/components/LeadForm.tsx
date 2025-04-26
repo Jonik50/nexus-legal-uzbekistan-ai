@@ -22,12 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-
-// Define interfaces for the form options
-interface SelectOption {
-  value: string;
-  label: string;
-}
+import { SelectOption } from "@/types/form";
 
 // Define the schema with proper types
 const formSchema = z.object({
@@ -45,27 +40,33 @@ export const LeadForm = () => {
 
   // Create typed options for select fields
   const getRoleOptions = (): SelectOption[] => {
-    const options = t("form.fields.role.options");
-    return Array.isArray(options) ? options.map((option: string) => ({
-      value: option,
-      label: option
-    })) : [];
+    const rawOptions = t("form.fields.role.options");
+    return Array.isArray(rawOptions) 
+      ? rawOptions.map((option: string) => ({
+          value: option,
+          label: option
+        }))
+      : [];
   };
 
   const getCompanySizeOptions = (): SelectOption[] => {
-    const options = t("form.fields.company_size.options");
-    return Array.isArray(options) ? options.map((option: string) => ({
-      value: option,
-      label: option
-    })) : [];
+    const rawOptions = t("form.fields.company_size.options");
+    return Array.isArray(rawOptions)
+      ? rawOptions.map((option: string) => ({
+          value: option,
+          label: option
+        }))
+      : [];
   };
 
   const getLanguageOptions = (): SelectOption[] => {
-    const options = t("form.fields.language.options");
-    return Array.isArray(options) ? options.map((option: string) => ({
-      value: option,
-      label: option
-    })) : [];
+    const rawOptions = t("form.fields.language.options");
+    return Array.isArray(rawOptions)
+      ? rawOptions.map((option: string) => ({
+          value: option,
+          label: option
+        }))
+      : [];
   };
 
   const form = useForm<FormValues>({
@@ -134,7 +135,7 @@ export const LeadForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("form.fields.role.label")}</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value || ""}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder={t("form.fields.role.placeholder")} />
@@ -159,7 +160,7 @@ export const LeadForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("form.fields.company_size.label")}</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value || ""}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder={t("form.fields.company_size.placeholder")} />
@@ -184,7 +185,7 @@ export const LeadForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("form.fields.language.label")}</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value || ""}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder={t("form.fields.language.placeholder")} />
