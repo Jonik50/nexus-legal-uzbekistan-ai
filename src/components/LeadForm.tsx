@@ -23,6 +23,13 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 
+// Define interfaces for the form options
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+// Define the schema with proper types
 const formSchema = z.object({
   email: z.string().email(),
   role: z.string().min(1),
@@ -35,6 +42,31 @@ type FormValues = z.infer<typeof formSchema>;
 export const LeadForm = () => {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Create typed options for select fields
+  const getRoleOptions = (): SelectOption[] => {
+    const options = t("form.fields.role.options");
+    return Array.isArray(options) ? options.map((option: string) => ({
+      value: option,
+      label: option
+    })) : [];
+  };
+
+  const getCompanySizeOptions = (): SelectOption[] => {
+    const options = t("form.fields.company_size.options");
+    return Array.isArray(options) ? options.map((option: string) => ({
+      value: option,
+      label: option
+    })) : [];
+  };
+
+  const getLanguageOptions = (): SelectOption[] => {
+    const options = t("form.fields.language.options");
+    return Array.isArray(options) ? options.map((option: string) => ({
+      value: option,
+      label: option
+    })) : [];
+  };
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -73,6 +105,10 @@ export const LeadForm = () => {
     }
   };
 
+  const roleOptions = getRoleOptions();
+  const companySizeOptions = getCompanySizeOptions();
+  const languageOptions = getLanguageOptions();
+
   return (
     <div className="bg-white p-6 rounded-xl shadow-md max-w-md w-full mx-auto">
       <h3 className="text-xl font-bold mb-4 text-center">{t("form.title")}</h3>
@@ -98,16 +134,16 @@ export const LeadForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("form.fields.role.label")}</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder={t("form.fields.role.placeholder")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {t("form.fields.role.options").map((option: string) => (
-                      <SelectItem key={option} value={option}>
-                        {option}
+                    {roleOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -123,16 +159,16 @@ export const LeadForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("form.fields.company_size.label")}</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder={t("form.fields.company_size.placeholder")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {t("form.fields.company_size.options").map((option: string) => (
-                      <SelectItem key={option} value={option}>
-                        {option}
+                    {companySizeOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -148,16 +184,16 @@ export const LeadForm = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t("form.fields.language.label")}</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder={t("form.fields.language.placeholder")} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {t("form.fields.language.options").map((option: string) => (
-                      <SelectItem key={option} value={option}>
-                        {option}
+                    {languageOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
