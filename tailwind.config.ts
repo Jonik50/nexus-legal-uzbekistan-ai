@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -25,8 +26,12 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT: '#0055FF',
+					foreground: '#FFFFFF'
+				},
+				accent: {
+					DEFAULT: '#00C27A',
+					foreground: '#FFFFFF'
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -40,9 +45,12 @@ export default {
 					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))'
 				},
-				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+				neutral: {
+					gray: '#8E9196',
+					darkPurple: '#1A1F2C',
+					lightPurple: '#D6BCFA',
+					softGray: '#F1F0FB',
+					coolGray: '#aaadb0',
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -66,7 +74,15 @@ export default {
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				'btn': '12px',
+			},
+			fontFamily: {
+				sans: ['Inter', 'Montserrat', 'sans-serif'],
+				montserrat: ['Montserrat', 'sans-serif'],
+			},
+			boxShadow: {
+				'btn': '0 2px 8px rgba(0,0,0,0.08)',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -84,11 +100,22 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'fade-in': {
+					from: {
+						opacity: '0',
+						transform: 'translateY(10px)'
+					},
+					to: {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.3s ease-out'
 			}
 		}
 	},
