@@ -34,39 +34,70 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const LeadForm = () => {
+export const LeadForm: React.FC = () => {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Create typed options for select fields
+  // Add console logs to debug translation issues
+  console.log("Translation object:", t);
+  console.log("Role options raw:", t("form.fields.role.options"));
+
+  // Create typed options for select fields with safer handling
   const getRoleOptions = (): SelectOption[] => {
-    const rawOptions = t("form.fields.role.options");
-    return Array.isArray(rawOptions) 
-      ? rawOptions.map((option: string) => ({
-          value: option,
-          label: option
-        }))
-      : [];
+    try {
+      const rawOptions = t("form.fields.role.options");
+      if (!rawOptions) {
+        console.warn("Missing translation for role options");
+        return [];
+      }
+      return Array.isArray(rawOptions) 
+        ? rawOptions.map((option: string) => ({
+            value: option,
+            label: option
+          }))
+        : [];
+    } catch (error) {
+      console.error("Error getting role options:", error);
+      return [];
+    }
   };
 
   const getCompanySizeOptions = (): SelectOption[] => {
-    const rawOptions = t("form.fields.company_size.options");
-    return Array.isArray(rawOptions)
-      ? rawOptions.map((option: string) => ({
-          value: option,
-          label: option
-        }))
-      : [];
+    try {
+      const rawOptions = t("form.fields.company_size.options");
+      if (!rawOptions) {
+        console.warn("Missing translation for company size options");
+        return [];
+      }
+      return Array.isArray(rawOptions)
+        ? rawOptions.map((option: string) => ({
+            value: option,
+            label: option
+          }))
+        : [];
+    } catch (error) {
+      console.error("Error getting company size options:", error);
+      return [];
+    }
   };
 
   const getLanguageOptions = (): SelectOption[] => {
-    const rawOptions = t("form.fields.language.options");
-    return Array.isArray(rawOptions)
-      ? rawOptions.map((option: string) => ({
-          value: option,
-          label: option
-        }))
-      : [];
+    try {
+      const rawOptions = t("form.fields.language.options");
+      if (!rawOptions) {
+        console.warn("Missing translation for language options");
+        return [];
+      }
+      return Array.isArray(rawOptions)
+        ? rawOptions.map((option: string) => ({
+            value: option,
+            label: option
+          }))
+        : [];
+    } catch (error) {
+      console.error("Error getting language options:", error);
+      return [];
+    }
   };
 
   const form = useForm<FormValues>({
@@ -86,13 +117,6 @@ export const LeadForm = () => {
     window.dispatchEvent(new CustomEvent("form_submit", { detail: data }));
     
     try {
-      // Here we would normally send data to the API
-      // const response = await fetch("/api/lead", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(data),
-      // });
-      
       // Simulate API call with timeout
       await new Promise(resolve => setTimeout(resolve, 1000));
       
@@ -106,13 +130,19 @@ export const LeadForm = () => {
     }
   };
 
+  // Generate options before rendering to handle errors early
   const roleOptions = getRoleOptions();
   const companySizeOptions = getCompanySizeOptions();
   const languageOptions = getLanguageOptions();
 
+  // Log option arrays for debugging
+  console.log("Generated role options:", roleOptions);
+  console.log("Generated company size options:", companySizeOptions);
+  console.log("Generated language options:", languageOptions);
+
   return (
     <div className="bg-white p-6 rounded-xl shadow-md max-w-md w-full mx-auto">
-      <h3 className="text-xl font-bold mb-4 text-center">{t("form.title")}</h3>
+      <h3 className="text-xl font-bold mb-4 text-center">{t("form.title") || "Contact Us"}</h3>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -120,9 +150,9 @@ export const LeadForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("form.fields.email.label")}</FormLabel>
+                <FormLabel>{t("form.fields.email.label") || "Email"}</FormLabel>
                 <FormControl>
-                  <Input placeholder={t("form.fields.email.placeholder")} {...field} />
+                  <Input placeholder={t("form.fields.email.placeholder") || "Enter your email"} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -134,19 +164,26 @@ export const LeadForm = () => {
             name="role"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("form.fields.role.label")}</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value || ""}>
+                <FormLabel>{t("form.fields.role.label") || "Role"}</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={t("form.fields.role.placeholder")} />
+                      <SelectValue placeholder={t("form.fields.role.placeholder") || "Select your role"} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {roleOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
+                    {roleOptions && roleOptions.length > 0 ? (
+                      roleOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="placeholder" disabled>No options available</SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -159,19 +196,26 @@ export const LeadForm = () => {
             name="company_size"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("form.fields.company_size.label")}</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value || ""}>
+                <FormLabel>{t("form.fields.company_size.label") || "Company Size"}</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={t("form.fields.company_size.placeholder")} />
+                      <SelectValue placeholder={t("form.fields.company_size.placeholder") || "Select company size"} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {companySizeOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
+                    {companySizeOptions && companySizeOptions.length > 0 ? (
+                      companySizeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="placeholder" disabled>No options available</SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -184,19 +228,26 @@ export const LeadForm = () => {
             name="language"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("form.fields.language.label")}</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value || ""} defaultValue={field.value || ""}>
+                <FormLabel>{t("form.fields.language.label") || "Preferred Language"}</FormLabel>
+                <Select 
+                  onValueChange={field.onChange} 
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={t("form.fields.language.placeholder")} />
+                      <SelectValue placeholder={t("form.fields.language.placeholder") || "Select language"} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {languageOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
+                    {languageOptions && languageOptions.length > 0 ? (
+                      languageOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="placeholder" disabled>No options available</SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -211,10 +262,10 @@ export const LeadForm = () => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                {t("form.submit")}
+                {t("form.submit") || "Submit"}
               </div>
             ) : (
-              t("form.submit")
+              t("form.submit") || "Submit"
             )}
           </Button>
         </form>
