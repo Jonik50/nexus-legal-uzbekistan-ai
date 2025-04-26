@@ -1,7 +1,6 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { users } from "lucide-react";
+import { Users } from "lucide-react";
 
 export const PersonasSection = () => {
   const { t } = useLanguage();
