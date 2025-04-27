@@ -11,10 +11,13 @@ import { EmailField } from "./form/EmailField";
 import { SelectField } from "./form/SelectField";
 import { SubmitButton } from "./form/SubmitButton";
 import { formSchema, FormValues } from "./form/types";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 export const LeadForm: React.FC = () => {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -54,10 +57,22 @@ export const LeadForm: React.FC = () => {
     window.dispatchEvent(new CustomEvent("form_submit", { detail: data }));
     
     try {
+      // Store lead information in Supabase (implementation will come later)
+      // For now, show success message and redirect to auth page
       await new Promise(resolve => setTimeout(resolve, 1000));
       toast.success(safeTranslation(t, "form.success", "Thank you! We'll be in touch soon."));
       form.reset();
-    } catch (error) {
+      
+      // Navigate to sign up page with the email pre-filled
+      setTimeout(() => {
+        navigate("/auth", { 
+          state: { 
+            activeTab: "signup",
+            email: data.email
+          } 
+        });
+      }, 1500);
+    } catch (error: any) {
       toast.error(
         error?.message || "An error occurred. Please try again."
       );

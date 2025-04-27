@@ -1,5 +1,6 @@
 
 import React, { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { LeadForm } from "../LeadForm";
@@ -7,6 +8,7 @@ import { LeadForm } from "../LeadForm";
 export const CTASection = () => {
   const { t } = useLanguage();
   const sectionRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -39,6 +41,17 @@ export const CTASection = () => {
     window.dispatchEvent(new CustomEvent("cta_click", { detail: { cta: ctaName } }));
   };
 
+  // Handlers for CTA buttons
+  const handleTryFreeClick = () => {
+    trackCTAClick("final_cta_try_free");
+    navigate("/auth", { state: { activeTab: "signup" } });
+  };
+
+  const handleRequestDemoClick = () => {
+    trackCTAClick("final_cta_request_demo");
+    navigate("/auth", { state: { activeTab: "signup", isDemoRequest: true } });
+  };
+
   return (
     <section id="contact" className="py-20 md:py-28 bg-gradient-to-b from-white to-neutral-50 relative" ref={sectionRef}>
       {/* Background decorative elements */}
@@ -58,7 +71,7 @@ export const CTASection = () => {
               <Button 
                 size="lg" 
                 className="btn-primary"
-                onClick={() => trackCTAClick("final_cta_try_free")}
+                onClick={handleTryFreeClick}
               >
                 {t("cta.primary")}
               </Button>
@@ -66,7 +79,7 @@ export const CTASection = () => {
                 variant="outline" 
                 size="lg" 
                 className="btn-secondary"
-                onClick={() => trackCTAClick("final_cta_request_demo")}
+                onClick={handleRequestDemoClick}
               >
                 {t("cta.secondary")}
               </Button>

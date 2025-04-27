@@ -1,14 +1,27 @@
 
 import React, { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
 
 export const HeroSection = () => {
   const { t } = useLanguage();
   const heroRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const trackCTAClick = (ctaName: string) => {
     window.dispatchEvent(new CustomEvent("cta_click", { detail: { cta: ctaName } }));
+  };
+
+  // Handlers for CTA buttons
+  const handleTryFreeClick = () => {
+    trackCTAClick("hero_try_free");
+    navigate("/auth", { state: { activeTab: "signup" } });
+  };
+
+  const handleRequestDemoClick = () => {
+    trackCTAClick("hero_request_demo");
+    navigate("/auth", { state: { activeTab: "signup", isDemoRequest: true } });
   };
 
   return (
@@ -26,7 +39,7 @@ export const HeroSection = () => {
               <Button 
                 size="lg" 
                 className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" 
-                onClick={() => trackCTAClick("hero_try_free")}
+                onClick={handleTryFreeClick}
               >
                 {t("hero.cta.primary")}
               </Button>
@@ -34,7 +47,7 @@ export const HeroSection = () => {
                 variant="outline" 
                 size="lg" 
                 className="border-2 border-primary text-primary hover:bg-primary/5 text-lg px-8 py-6 rounded-xl transition-colors"
-                onClick={() => trackCTAClick("hero_request_demo")}
+                onClick={handleRequestDemoClick}
               >
                 {t("hero.cta.secondary")}
               </Button>
