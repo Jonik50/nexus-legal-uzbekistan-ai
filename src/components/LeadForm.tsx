@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -22,14 +22,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { SelectOption } from "@/types/form";
+import { SelectOption, TranslatedOptions } from "@/types/form";
+import { getTranslatedOptions, safeTranslation, handleFormError } from "@/utils/formUtils";
 
 // Define the schema with proper types
 const formSchema = z.object({
-  email: z.string().email(),
-  role: z.string().min(1),
-  company_size: z.string().min(1),
-  language: z.string().min(1),
+  email: z.string().email("Please enter a valid email address"),
+  role: z.string().min(1, "Please select a role"),
+  company_size: z.string().min(1, "Please select a company size"),
+  language: z.string().min(1, "Please select a language"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -37,68 +38,29 @@ type FormValues = z.infer<typeof formSchema>;
 export const LeadForm: React.FC = () => {
   const { t } = useLanguage();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Add console logs to debug translation issues
-  console.log("Translation object:", t);
-  console.log("Role options raw:", t("form.fields.role.options"));
-
-  // Create typed options for select fields with safer handling
-  const getRoleOptions = (): SelectOption[] => {
-    try {
-      const rawOptions = t("form.fields.role.options");
-      if (!rawOptions) {
-        console.warn("Missing translation for role options");
-        return [];
-      }
-      return Array.isArray(rawOptions) 
-        ? rawOptions.map((option: string) => ({
-            value: option,
-            label: option
-          }))
-        : [];
-    } catch (error) {
-      console.error("Error getting role options:", error);
-      return [];
-    }
-  };
-
-  const getCompanySizeOptions = (): SelectOption[] => {
-    try {
-      const rawOptions = t("form.fields.company_size.options");
-      if (!rawOptions) {
-        console.warn("Missing translation for company size options");
-        return [];
-      }
-      return Array.isArray(rawOptions)
-        ? rawOptions.map((option: string) => ({
-            value: option,
-            label: option
-          }))
-        : [];
-    } catch (error) {
-      console.error("Error getting company size options:", error);
-      return [];
-    }
-  };
-
-  const getLanguageOptions = (): SelectOption[] => {
-    try {
-      const rawOptions = t("form.fields.language.options");
-      if (!rawOptions) {
-        console.warn("Missing translation for language options");
-        return [];
-      }
-      return Array.isArray(rawOptions)
-        ? rawOptions.map((option: string) => ({
-            value: option,
-            label: option
-          }))
-        : [];
-    } catch (error) {
-      console.error("Error getting language options:", error);
-      return [];
-    }
-  };
+  
+  // Memoize options to avoid unnecessary re-renders
+  const roleOptions = useCallback((): TranslatedOptions => {
+    return getTranslatedOptions(
+      t("form.fields.role.options"),
+      "form.fields.role.options",
+      [{ value: "default", label: "Default Role", disabled: true }]
+    );
+  }, [t]);
+  
+  const companySizeOptions = useCallback((): TranslatedOptions => {
+    return getTranslatedOptions(
+      t("form.fields.company_size.options"),
+      "form.fields.company_size.options"
+    );
+  }, [t]);
+  
+  const languageOptions = useCallback((): TranslatedOptions => {
+    return getTranslatedOptions(
+      t("form.fields.language.options"),
+      "form.fields.language.options"
+    );
+  }, [t]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -120,29 +82,25 @@ export const LeadForm: React.FC = () => {
       // Simulate API call with timeout
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      toast.success(t("form.success"));
+      toast.success(safeTranslation(t, "form.success", "Thank you! We'll be in touch soon."));
       form.reset();
     } catch (error) {
-      console.error("Error submitting form:", error);
-      toast.error(t("form.error"));
+      handleFormError(error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Generate options before rendering to handle errors early
-  const roleOptions = getRoleOptions();
-  const companySizeOptions = getCompanySizeOptions();
-  const languageOptions = getLanguageOptions();
-
-  // Log option arrays for debugging
-  console.log("Generated role options:", roleOptions);
-  console.log("Generated company size options:", companySizeOptions);
-  console.log("Generated language options:", languageOptions);
+  // Pre-generate options with error handling
+  const roleOptionsList = roleOptions();
+  const companySizeOptionsList = companySizeOptions();
+  const languageOptionsList = languageOptions();
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-md max-w-md w-full mx-auto">
-      <h3 className="text-xl font-bold mb-4 text-center">{t("form.title") || "Contact Us"}</h3>
+      <h3 className="text-xl font-bold mb-4 text-center">
+        {safeTranslation(t, "form.title", "Contact Us")}
+      </h3>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -150,9 +108,15 @@ export const LeadForm: React.FC = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("form.fields.email.label") || "Email"}</FormLabel>
+                <FormLabel>
+                  {safeTranslation(t, "form.fields.email.label", "Email")}
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder={t("form.fields.email.placeholder") || "Enter your email"} {...field} />
+                  <Input 
+                    placeholder={safeTranslation(t, "form.fields.email.placeholder", "Enter your email")} 
+                    {...field} 
+                    type="email"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -164,20 +128,24 @@ export const LeadForm: React.FC = () => {
             name="role"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("form.fields.role.label") || "Role"}</FormLabel>
+                <FormLabel>
+                  {safeTranslation(t, "form.fields.role.label", "Role")}
+                </FormLabel>
                 <Select 
                   onValueChange={field.onChange} 
-                  defaultValue={field.value}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={t("form.fields.role.placeholder") || "Select your role"} />
+                      <SelectValue placeholder={
+                        safeTranslation(t, "form.fields.role.placeholder", "Select your role")
+                      } />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {roleOptions && roleOptions.length > 0 ? (
-                      roleOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
+                    {roleOptionsList && roleOptionsList.length > 0 ? (
+                      roleOptionsList.map((option) => (
+                        <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
                           {option.label}
                         </SelectItem>
                       ))
@@ -196,20 +164,24 @@ export const LeadForm: React.FC = () => {
             name="company_size"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("form.fields.company_size.label") || "Company Size"}</FormLabel>
+                <FormLabel>
+                  {safeTranslation(t, "form.fields.company_size.label", "Company Size")}
+                </FormLabel>
                 <Select 
-                  onValueChange={field.onChange} 
-                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={t("form.fields.company_size.placeholder") || "Select company size"} />
+                      <SelectValue placeholder={
+                        safeTranslation(t, "form.fields.company_size.placeholder", "Select company size")
+                      } />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {companySizeOptions && companySizeOptions.length > 0 ? (
-                      companySizeOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
+                    {companySizeOptionsList && companySizeOptionsList.length > 0 ? (
+                      companySizeOptionsList.map((option) => (
+                        <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
                           {option.label}
                         </SelectItem>
                       ))
@@ -228,20 +200,24 @@ export const LeadForm: React.FC = () => {
             name="language"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{t("form.fields.language.label") || "Preferred Language"}</FormLabel>
+                <FormLabel>
+                  {safeTranslation(t, "form.fields.language.label", "Preferred Language")}
+                </FormLabel>
                 <Select 
-                  onValueChange={field.onChange} 
-                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                  value={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder={t("form.fields.language.placeholder") || "Select language"} />
+                      <SelectValue placeholder={
+                        safeTranslation(t, "form.fields.language.placeholder", "Select language")
+                      } />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {languageOptions && languageOptions.length > 0 ? (
-                      languageOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
+                    {languageOptionsList && languageOptionsList.length > 0 ? (
+                      languageOptionsList.map((option) => (
+                        <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
                           {option.label}
                         </SelectItem>
                       ))
@@ -262,10 +238,10 @@ export const LeadForm: React.FC = () => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                {t("form.submit") || "Submit"}
+                {safeTranslation(t, "form.submit", "Submit")}
               </div>
             ) : (
-              t("form.submit") || "Submit"
+              safeTranslation(t, "form.submit", "Submit")
             )}
           </Button>
         </form>

@@ -19,3 +19,17 @@ export interface FormConfig {
   success: string;
   error: string;
 }
+
+// Enhanced types for form handling
+export interface FormTranslation {
+  key: string;
+  fallback: string;
+}
+
+export interface SelectFieldOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+
+export type TranslatedOptions = SelectFieldOption[] | null;
