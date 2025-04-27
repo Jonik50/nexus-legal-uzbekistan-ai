@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -7,49 +6,20 @@ export const HeroSection = () => {
   const { t } = useLanguage();
   const heroRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const animElements = heroRef.current?.querySelectorAll(".animate-stagger");
-    animElements?.forEach((el, i) => {
-      const element = el as HTMLElement;
-      element.style.animationDelay = `${i * 60}ms`;
-      observer.observe(element);
-    });
-
-    return () => {
-      animElements?.forEach((el) => {
-        observer.unobserve(el);
-      });
-    };
-  }, []);
-
-  const trackCTAClick = (ctaName: string) => {
-    window.dispatchEvent(new CustomEvent("cta_click", { detail: { cta: ctaName } }));
-  };
+  console.log("HeroSection rendering, translations available:", !!t);
 
   return (
-    <section className="pt-28 pb-16 md:pt-36 md:pb-24 bg-gradient-to-b from-neutral-softGray to-white">
-      <div className="container-custom" ref={heroRef}>
+    <section className="pt-28 pb-16 md:pt-36 md:pb-24 debug-outline debug-bg">
+      <div className="container-custom debug-outline" ref={heroRef}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="text-center lg:text-left">
-            <h1 className="animate-stagger text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-neutral-darkPurple">
+          <div className="text-center lg:text-left debug-outline">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-black">
               {t("hero.title")}
             </h1>
-            <p className="animate-stagger text-xl text-neutral-gray mb-8 max-w-xl mx-auto lg:mx-0">
+            <p className="text-xl text-black mb-8 max-w-xl mx-auto lg:mx-0">
               {t("hero.subtitle")}
             </p>
-            <div className="animate-stagger flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button 
                 size="lg" 
                 className="btn-primary text-lg px-8 py-6" 

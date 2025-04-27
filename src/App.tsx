@@ -9,7 +9,6 @@ import { LanguageProvider } from "./context/LanguageContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
-// Create a new query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -19,7 +18,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// Add a console log to track component rendering
 console.log("App component rendering");
 
 const App = () => (
@@ -29,11 +27,13 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="app-container text-neutral-darkPurple">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+          <div className="min-h-screen bg-white text-black debug-outline">
+            <div className="container-custom mx-auto px-4 py-8 debug-outline">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
           </div>
         </BrowserRouter>
       </TooltipProvider>
