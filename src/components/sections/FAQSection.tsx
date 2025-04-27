@@ -40,25 +40,34 @@ export const FAQSection = () => {
   }, []);
 
   return (
-    <section id="faq" className="py-16 md:py-24 bg-neutral-softGray" ref={sectionRef}>
-      <div className="container-custom max-w-4xl">
+    <section id="faq" className="py-20 md:py-28 bg-gradient-to-b from-neutral-softGray to-white relative" ref={sectionRef}>
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,197,122,0.03),transparent_70%)] pointer-events-none"></div>
+      
+      <div className="container-custom max-w-4xl relative z-10">
         <h2 className="animate-stagger section-title text-center">
           {t("faq.title")}
         </h2>
 
-        <div className="animate-stagger mt-12">
-          <Accordion type="single" collapsible className="w-full">
+        <div className="animate-stagger mt-16">
+          <Accordion type="single" collapsible className="w-full bg-white rounded-xl shadow-md border border-neutral-100 overflow-hidden">
             {t("faq.items").map((item: any, index: number) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left">
+              <AccordionItem key={index} value={`item-${index}`} className={`px-4 ${index > 0 ? 'border-t border-neutral-100' : ''}`}>
+                <AccordionTrigger className="text-left py-5 font-medium">
                   {item.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-neutral-gray">
+                <AccordionContent className="text-neutral-gray pb-5">
                   {item.answer}
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
+        </div>
+
+        <div className="mt-12 text-center animate-stagger">
+          <p className="text-neutral-gray">
+            Can't find the answer you're looking for? <a href="#contact" className="text-primary hover:underline font-medium">Contact our support team</a>
+          </p>
         </div>
       </div>
     </section>

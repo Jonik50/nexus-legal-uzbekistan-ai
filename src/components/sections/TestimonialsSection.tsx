@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
-import { Star } from "lucide-react";
+import { Star, Quote } from "lucide-react";
 
 export const TestimonialsSection = () => {
   const { t } = useLanguage();
@@ -46,15 +46,19 @@ export const TestimonialsSection = () => {
   }, [testimonials.length]);
 
   return (
-    <section className="py-16 md:py-24 bg-neutral-softGray" ref={sectionRef}>
-      <div className="container-custom">
+    <section className="py-20 md:py-28 bg-gradient-to-b from-white to-neutral-softGray relative overflow-hidden" ref={sectionRef}>
+      {/* Background decorative elements */}
+      <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-primary/5 blur-3xl"></div>
+      <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-accent/5 blur-3xl"></div>
+
+      <div className="container-custom relative z-10">
         <h2 className="animate-stagger section-title text-center">
           {t("testimonials.title")}
         </h2>
 
-        <div className="animate-stagger mt-12">
+        <div className="animate-stagger mt-16">
           {/* Testimonial slider */}
-          <div className="relative h-[300px] md:h-[220px]">
+          <div className="relative h-[300px] md:h-[240px]">
             {testimonials.map((testimonial: any, index: number) => (
               <div
                 key={index}
@@ -62,7 +66,10 @@ export const TestimonialsSection = () => {
                   activeIndex === index ? "opacity-100" : "opacity-0 pointer-events-none"
                 }`}
               >
-                <div className="bg-white p-8 rounded-xl shadow-md max-w-3xl mx-auto">
+                <div className="bg-white p-8 rounded-2xl shadow-lg max-w-3xl mx-auto border border-neutral-200">
+                  <div className="absolute -left-2 -top-2 text-primary/10">
+                    <Quote size={48} />
+                  </div>
                   <div className="flex mb-4">
                     {[...Array(5)].map((_, i) => (
                       <Star
@@ -71,9 +78,9 @@ export const TestimonialsSection = () => {
                       />
                     ))}
                   </div>
-                  <p className="text-lg italic mb-6">"{testimonial.quote}"</p>
+                  <p className="text-lg italic mb-6 relative z-10">"{testimonial.quote}"</p>
                   <div className="flex items-center">
-                    <div className="bg-neutral-gray/20 rounded-full w-12 h-12 flex items-center justify-center text-neutral-gray font-bold">
+                    <div className="bg-primary/10 rounded-full w-12 h-12 flex items-center justify-center text-primary font-bold">
                       {testimonial.author.charAt(0)}
                     </div>
                     <div className="ml-4">
@@ -87,7 +94,7 @@ export const TestimonialsSection = () => {
           </div>
 
           {/* Testimonial navigation dots */}
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-8">
             {testimonials.map((_, index) => (
               <button
                 key={index}
@@ -97,21 +104,22 @@ export const TestimonialsSection = () => {
                     : "w-2 h-2 bg-neutral-gray hover:bg-primary/50"
                 }`}
                 onClick={() => setActiveIndex(index)}
+                aria-label={`View testimonial ${index + 1}`}
               />
             ))}
           </div>
         </div>
 
         {/* Client logos */}
-        <div className="animate-stagger mt-16">
-          <p className="text-center text-neutral-gray mb-8 text-sm uppercase tracking-wider">
+        <div className="animate-stagger mt-20">
+          <p className="text-center text-neutral-gray mb-8 text-sm uppercase tracking-wider font-medium">
             Trusted by leading organizations
           </p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
             {clients.map((client: string, index: number) => (
               <div
                 key={index}
-                className="bg-white px-6 py-4 rounded-lg shadow-sm"
+                className="bg-white px-6 py-4 rounded-lg shadow-md border border-neutral-100 hover:shadow-lg transition-shadow duration-300"
               >
                 <p className="text-neutral-darkPurple font-bold">{client}</p>
               </div>

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Users } from "lucide-react";
@@ -44,13 +45,17 @@ export const PersonasSection = () => {
   }, [personas.length]);
 
   return (
-    <section id="personas" className="py-16 md:py-24 bg-neutral-softGray" ref={sectionRef}>
-      <div className="container-custom">
+    <section id="personas" className="py-20 md:py-28 bg-gradient-to-b from-neutral-softGray to-white relative overflow-hidden" ref={sectionRef}>
+      {/* Background decorative elements */}
+      <div className="absolute top-40 left-10 w-64 h-64 rounded-full bg-accent/5 blur-3xl"></div>
+      <div className="absolute bottom-40 right-10 w-80 h-80 rounded-full bg-primary/5 blur-3xl"></div>
+      
+      <div className="container-custom relative z-10">
         <h2 className="animate-stagger section-title text-center">
           {t("personas.title")}
         </h2>
 
-        <div className="animate-stagger mt-12">
+        <div className="animate-stagger mt-16">
           {/* Personas cards */}
           <div className="flex flex-wrap justify-center gap-6">
             {personas.map((persona: any, index: number) => (
@@ -58,16 +63,20 @@ export const PersonasSection = () => {
                 key={index}
                 className={`feature-card w-full md:w-[calc(50%-1rem)] lg:w-[calc(25%-1rem)] cursor-pointer transition-all duration-300 ${
                   activeIndex === index
-                    ? "border-2 border-primary scale-105"
-                    : "border border-transparent opacity-80 hover:opacity-100"
+                    ? "border-2 border-primary scale-105 shadow-lg"
+                    : "border border-neutral-100 opacity-80 hover:opacity-100 hover:shadow-md"
                 }`}
                 onClick={() => setActiveIndex(index)}
               >
                 <div className="flex flex-col items-center text-center h-full">
-                  <div className="bg-primary/10 p-4 rounded-full mb-4">
+                  <div className={`p-4 rounded-full mb-6 ${
+                    activeIndex === index ? 'bg-primary/20' : 'bg-primary/10'
+                  }`}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-primary"
+                      className={`h-6 w-6 ${
+                        activeIndex === index ? 'text-primary' : 'text-primary/80'
+                      }`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -80,7 +89,7 @@ export const PersonasSection = () => {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold mb-3">{persona.title}</h3>
+                  <h3 className="text-xl font-bold mb-4">{persona.title}</h3>
                   <p className="text-neutral-gray">{persona.description}</p>
                 </div>
               </div>
@@ -88,7 +97,7 @@ export const PersonasSection = () => {
           </div>
 
           {/* Dots indicator */}
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-10">
             {personas.map((_, index) => (
               <button
                 key={index}
@@ -98,6 +107,7 @@ export const PersonasSection = () => {
                     : "w-2 h-2 bg-neutral-gray hover:bg-primary/50"
                 }`}
                 onClick={() => setActiveIndex(index)}
+                aria-label={`View persona ${index + 1}`}
               />
             ))}
           </div>

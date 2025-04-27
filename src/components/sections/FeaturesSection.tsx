@@ -46,8 +46,11 @@ export const FeaturesSection = () => {
   ];
 
   return (
-    <section id="features" className="py-16 md:py-24 bg-neutral-softGray" ref={sectionRef}>
-      <div className="container-custom">
+    <section id="features" className="py-20 md:py-28 bg-gradient-to-b from-neutral-softGray to-white relative" ref={sectionRef}>
+      {/* Background decoration */}
+      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-white to-transparent"></div>
+      
+      <div className="container-custom relative z-10">
         <h2 className="animate-stagger section-title text-center">
           {t("features.title")}
         </h2>
@@ -55,26 +58,29 @@ export const FeaturesSection = () => {
           {t("features.subtitle")}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
           {t("features.items").map((feature: any, index: number) => {
-            const IconConfig = featureIcons[index];
+            const IconConfig = featureIcons[index % featureIcons.length];
             const Icon = IconConfig.icon;
             
             return (
               <div
                 key={index}
-                className="animate-stagger feature-card hover:-translate-y-1 transition-all duration-300"
+                className="animate-stagger feature-card group hover:shadow-xl transform transition-all duration-300 hover:-translate-y-2"
               >
-                <div className={`rounded-lg p-3 inline-block mb-4 ${IconConfig.bg}`}>
+                <div className={`rounded-lg p-4 inline-block mb-5 ${IconConfig.bg} group-hover:scale-110 transition-transform duration-300`}>
                   <Icon className={`w-6 h-6 ${IconConfig.color}`} />
                 </div>
-                <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
+                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
                 <p className="text-neutral-gray">{feature.description}</p>
               </div>
             );
           })}
         </div>
       </div>
+      
+      {/* Bottom decoration */}
+      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent"></div>
     </section>
   );
 };

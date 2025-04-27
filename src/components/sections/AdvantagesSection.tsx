@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { FileText } from "lucide-react";
+import { FileText, Download } from "lucide-react";
 
 export const AdvantagesSection = () => {
   const { t } = useLanguage();
@@ -40,8 +40,11 @@ export const AdvantagesSection = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-white" ref={sectionRef}>
-      <div className="container-custom">
+    <section className="py-20 md:py-28 bg-gradient-to-b from-neutral-50 to-white relative" ref={sectionRef}>
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(0,85,255,0.05),transparent_70%)] pointer-events-none"></div>
+      
+      <div className="container-custom relative z-10">
         <h2 className="animate-stagger section-title text-center">
           {t("advantages.title")}
         </h2>
@@ -49,51 +52,53 @@ export const AdvantagesSection = () => {
           {t("advantages.subtitle")}
         </p>
 
-        <div className="animate-stagger mt-12 overflow-x-auto">
-          <table className="w-full border-collapse min-w-[600px]">
-            <thead>
-              <tr className="bg-neutral-softGray">
-                {t("advantages.table.headers").map((header: string, index: number) => (
-                  <th
-                    key={index}
-                    className={`py-4 px-6 text-left font-bold ${
-                      index === 1 ? "text-primary" : ""
-                    }`}
-                  >
-                    {header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {t("advantages.table.rows").map((row: string[], index: number) => (
-                <tr
-                  key={index}
-                  className={index % 2 === 0 ? "bg-white" : "bg-neutral-softGray/30"}
-                >
-                  {row.map((cell, cellIndex) => (
-                    <td
-                      key={cellIndex}
-                      className={`py-4 px-6 ${
-                        cellIndex === 1 ? "text-primary font-bold" : ""
+        <div className="animate-stagger mt-16 overflow-x-auto">
+          <div className="bg-white rounded-xl shadow-lg border border-neutral-100 p-1">
+            <table className="w-full border-collapse min-w-[600px]">
+              <thead>
+                <tr className="bg-neutral-softGray">
+                  {t("advantages.table.headers").map((header: string, index: number) => (
+                    <th
+                      key={index}
+                      className={`py-4 px-6 text-left font-bold ${
+                        index === 1 ? "text-primary" : ""
                       }`}
                     >
-                      {cell}
-                    </td>
+                      {header}
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {t("advantages.table.rows").map((row: string[], index: number) => (
+                  <tr
+                    key={index}
+                    className={index % 2 === 0 ? "bg-white" : "bg-neutral-softGray/30"}
+                  >
+                    {row.map((cell, cellIndex) => (
+                      <td
+                        key={cellIndex}
+                        className={`py-4 px-6 ${
+                          cellIndex === 1 ? "text-primary font-bold" : ""
+                        }`}
+                      >
+                        {cell}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
-        <div className="animate-stagger mt-8 text-center">
+        <div className="animate-stagger mt-10 text-center">
           <Button 
             variant="outline" 
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 shadow-sm hover:shadow transition-all duration-200"
             onClick={trackDownloadClick}
           >
-            <FileText className="w-4 h-4" />
+            <Download className="w-4 h-4" />
             {t("advantages.cta")}
           </Button>
         </div>

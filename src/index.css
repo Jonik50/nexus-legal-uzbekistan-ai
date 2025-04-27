@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
 
 @tailwind base;
@@ -104,7 +105,7 @@
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl font-bold mb-6 text-neutral-darkPurple;
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-neutral-darkPurple;
   }
 
   .section-subtitle {
@@ -112,7 +113,7 @@
   }
 
   .feature-card {
-    @apply bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    @apply bg-white rounded-xl shadow-md p-8 transition-all duration-300 border border-neutral-100;
   }
 
   .animate-stagger {
@@ -122,12 +123,48 @@
   .animate-stagger.animate-visible {
     @apply animate-fade-in;
   }
-  
-  .debug-outline {
-    @apply outline outline-2 outline-red-500;
-  }
+}
 
-  .debug-bg {
-    @apply bg-neutral-softGray;
+/* Animation keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.5s ease-out forwards;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
