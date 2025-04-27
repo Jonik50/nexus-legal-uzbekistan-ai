@@ -46,11 +46,11 @@ export default {
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				neutral: {
-					gray: '#8E9196',
+					gray: '#666666', // Darkened from #8E9196 for better contrast
 					darkPurple: '#1A1F2C',
 					lightPurple: '#D6BCFA',
 					softGray: '#F1F0FB',
-					coolGray: '#aaadb0',
+					coolGray: '#666666', // Darkened from #aaadb0 for better contrast
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',

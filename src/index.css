@@ -80,6 +80,11 @@
   html {
     scroll-behavior: smooth;
   }
+
+  /* Force text visibility for debugging */
+  body * {
+    color-scheme: light;
+  }
 }
 
 @layer base {
@@ -123,5 +128,10 @@
 
   .animate-stagger.animate-visible {
     @apply animate-fade-in;
+  }
+  
+  /* Debug styles */
+  .debug-outline {
+    @apply outline outline-1 outline-red-500;
   }
 }
