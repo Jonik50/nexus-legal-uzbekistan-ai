@@ -18,8 +18,6 @@ const queryClient = new QueryClient({
   },
 });
 
-console.log("App component rendering");
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <LanguageProvider>
@@ -27,13 +25,11 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="min-h-screen bg-white text-black debug-outline">
-            <div className="container-custom mx-auto px-4 py-8 debug-outline">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </div>
+          <div className="min-h-screen bg-white text-black">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </div>
         </BrowserRouter>
       </TooltipProvider>
