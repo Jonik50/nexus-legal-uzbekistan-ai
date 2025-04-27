@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,10 @@ export const HeroSection = () => {
   const heroRef = useRef<HTMLDivElement>(null);
 
   console.log("HeroSection rendering, translations available:", !!t);
+
+  const trackCTAClick = (ctaName: string) => {
+    window.dispatchEvent(new CustomEvent("cta_click", { detail: { cta: ctaName } }));
+  };
 
   return (
     <section className="pt-28 pb-16 md:pt-36 md:pb-24 debug-outline debug-bg">
