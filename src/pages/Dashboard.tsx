@@ -1,10 +1,11 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { DocumentUpload } from "@/components/documents/DocumentUpload";
+import { DocumentList } from "@/components/documents/DocumentList";
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
@@ -67,17 +68,24 @@ const Dashboard = () => {
           <Button onClick={handleLogout} variant="outline">Logout</Button>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="mb-8">
           <Card>
             <CardHeader>
-              <CardTitle>Documents</CardTitle>
+              <CardTitle>Upload Documents</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-neutral-gray mb-4">Start by uploading your legal documents for analysis</p>
-              <Button className="w-full">Upload Document</Button>
+              <p className="text-neutral-gray mb-4">Upload your legal documents for analysis</p>
+              <DocumentUpload />
             </CardContent>
           </Card>
+        </div>
 
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Your Documents</h2>
+          <DocumentList />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
               <CardTitle>Contract Analysis</CardTitle>
