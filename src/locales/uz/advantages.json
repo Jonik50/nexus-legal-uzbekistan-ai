@@ -1,0 +1,17 @@
+
+{
+  "title": "Legal Nexus AI ni an'anaviy yechimlar bilan taqqoslash",
+  "subtitle": "Bizning AI-quvvatlangan yechimimizni an'anaviy huquqiy tadqiqot va hujjatlarni tahlil qilish usullari bilan taqqoslang",
+  "cta": "To'liq taqqoslash hisobotini yuklab olish",
+  "table": {
+    "headers": ["Funksiya", "Legal Nexus AI", "An'anaviy usullar"],
+    "rows": [
+      ["Hujjatlarni tahlil qilish tezligi", "30 soniyadan kam", "Bir necha soat"],
+      ["Qonuniy muvofiqlik", "Avtomatik tekshiruvlar", "Qo'lda tekshirish"],
+      ["Ko'p tilli qo'llab-quvvatlash", "O'zbek, rus, ingliz", "Tarjimonga bog'liq"],
+      ["Narx samaradorligi", "Belgilangan obuna", "Soatli to'lov"],
+      ["Xatolarni aniqlash darajasi", "98% aniqlik", "70-85% aniqlik"],
+      ["Huquqiy kontekstni tushunish", "Mahalliy huquqiy baza bilan integratsiya", "Mutaxassis talab qilinadi"]
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+
+{
+  "title": "Compare Legal Nexus AI with Traditional Solutions",
+  "subtitle": "See how our AI-powered solution compares to traditional legal research and document analysis methods",
+  "cta": "Download Full Comparison Report",
+  "table": {
+    "headers": ["Feature", "Legal Nexus AI", "Traditional Methods"],
+    "rows": [
+      ["Document Analysis Speed", "Under 30 seconds", "Several hours"],
+      ["Regulatory Compliance", "Automated checks", "Manual verification"],
+      ["Multilingual Support", "Uzbek, Russian, English", "Depends on translator"],
+      ["Cost Efficiency", "Fixed subscription", "Hourly billing"],
+      ["Error Detection Rate", "98% accuracy", "70-85% accuracy"],
+      ["Legal Context Awareness", "Local legal database integration", "Requires specialist"]
+    ]
+  }
+}

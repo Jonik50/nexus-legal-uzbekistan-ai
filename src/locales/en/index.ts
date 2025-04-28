@@ -10,6 +10,7 @@ import cookies from './cookies.json';
 import testimonials from './testimonials.json';
 import personas from './personas.json';
 import faq from './faq.json';
+import advantages from './advantages.json';
 
 export default {
   ...meta,
@@ -22,5 +23,6 @@ export default {
   ...cookies,
   ...testimonials,
   ...personas,
-  ...faq
+  ...faq,
+  ...advantages
 };
