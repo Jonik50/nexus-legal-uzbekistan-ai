@@ -3,9 +3,10 @@ import React, { useEffect, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
+import { formatCurrencyRU } from "@/utils/typography";
 
 export const PricingSection = () => {
-  const { t } = useLanguage();
+  const { t, language, region } = useLanguage();
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,6 +40,27 @@ export const PricingSection = () => {
     window.dispatchEvent(new CustomEvent("cta_click", { detail: { cta: `pricing_${planName.toLowerCase()}` } }));
   };
 
+  // Calculate UZS price if needed (assuming conversion rate 1 USD = approximately 13000 UZS)
+  const formatPrice = (price: string | number): React.ReactNode => {
+    if (price === "Индивидуально" || price === "Individualno" || typeof price === "string" && isNaN(Number(price))) {
+      return price;
+    }
+    
+    const numericPrice = Number(price);
+    
+    if (region === "UZ" && language === "ru") {
+      // For Uzbekistan in Russian language, show UZS with proper formatting
+      const uzsPrice = numericPrice * 13000; // Example conversion
+      return formatCurrencyRU(uzsPrice, "сум");
+    } else if (language === "ru") {
+      // For Russian language in other regions
+      return `${numericPrice} $`;
+    } else {
+      // Default format
+      return `$${numericPrice}`;
+    }
+  };
+
   return (
     <section id="pricing" className="py-20 md:py-28 bg-gradient-to-b from-neutral-softGray to-white relative" ref={sectionRef}>
       {/* Background decoration */}
@@ -61,14 +83,14 @@ export const PricingSection = () => {
             >
               {index === 1 && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary text-white px-6 py-1 rounded-full text-sm font-semibold shadow-md">
-                  Most Popular
+                  {language === "ru" ? "Популярный" : (language === "uz" ? "Eng mashhur" : "Most Popular")}
                 </div>
               )}
 
               <div className="flex-grow">
                 <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
                 <div className="flex items-end mb-6">
-                  <span className="text-4xl font-bold">${plan.price}</span>
+                  <span className="text-4xl font-bold">{formatPrice(plan.price)}</span>
                   {plan.period && (
                     <span className="text-neutral-gray ml-1">{plan.period}</span>
                   )}

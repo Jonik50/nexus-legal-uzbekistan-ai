@@ -14,28 +14,47 @@ import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { PricingSection } from "@/components/sections/PricingSection";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { CTASection } from "@/components/sections/CTASection";
+import { formatRussianText } from "@/utils/typography";
 
 const Index = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
-  // Set metadata
+  // Enhanced metadata setup with proper typography
   useEffect(() => {
-    document.title = t("meta.title");
+    let pageTitle = t("meta.title");
+    let pageDescription = t("meta.description");
+    
+    // Apply advanced typography formatting for Russian language
+    if (language === "ru") {
+      pageTitle = formatRussianText(pageTitle);
+      pageDescription = formatRussianText(pageDescription);
+    }
+    
+    document.title = pageTitle;
+    
+    // Update meta description
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute("content", t("meta.description"));
+      metaDescription.setAttribute("content", pageDescription);
     }
 
-    // Initialize self-hosted analytics tracker
+    // Setup analytics with enhanced language tracking
     const setupAnalytics = () => {
-      // This would typically use a self-hosted Plausible.io instance
-      // We're mocking the tracking functionality for demo purposes
+      // Enhanced analytics to track language and region
       window.addEventListener("cta_click", (event) => {
-        console.log("Analytics: CTA clicked", (event as CustomEvent).detail);
+        const data = (event as CustomEvent).detail;
+        console.log("Analytics: CTA clicked", {
+          ...data,
+          language,
+        });
       });
       
       window.addEventListener("form_submit", (event) => {
-        console.log("Analytics: Form submitted", (event as CustomEvent).detail);
+        const data = (event as CustomEvent).detail;
+        console.log("Analytics: Form submitted", {
+          ...data,
+          language,
+        });
       });
       
       window.addEventListener("lang_toggle", (event) => {
@@ -43,12 +62,16 @@ const Index = () => {
       });
       
       window.addEventListener("download_pdf", (event) => {
-        console.log("Analytics: PDF downloaded", (event as CustomEvent).detail);
+        const data = (event as CustomEvent).detail;
+        console.log("Analytics: PDF downloaded", {
+          ...data,
+          language,
+        });
       });
     };
 
     setupAnalytics();
-  }, [t]);
+  }, [t, language]);
 
   return (
     <>
