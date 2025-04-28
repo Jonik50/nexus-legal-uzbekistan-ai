@@ -1,11 +1,12 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const DocumentUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -18,10 +19,7 @@ export const DocumentUpload = () => {
     getUser();
   }, []);
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    
+  const handleUpload = async (file: File) => {
     if (!user) {
       toast.error("You must be logged in to upload documents");
       return;
@@ -49,7 +47,7 @@ export const DocumentUpload = () => {
           file_path: filePath,
           type: file.type,
           status: 'pending',
-          user_id: user.id // Add the user_id field
+          user_id: user.id
         });
 
       if (dbError) throw dbError;
@@ -62,8 +60,51 @@ export const DocumentUpload = () => {
     }
   };
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      handleUpload(file);
+    }
+  };
+
+  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleUpload(file);
+    }
+  };
+
   return (
-    <div className="flex items-center space-x-4">
+    <div
+      className={`border-2 border-dashed rounded-lg p-6 text-center ${
+        isDragging ? 'border-primary bg-primary/10' : 'border-gray-300'
+      }`}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       <input
         type="file"
         id="file-upload"
@@ -71,12 +112,17 @@ export const DocumentUpload = () => {
         onChange={handleFileUpload}
         accept=".pdf,.doc,.docx"
       />
-      <Button
-        onClick={() => document.getElementById('file-upload')?.click()}
-        disabled={isUploading || !user}
-      >
-        {isUploading ? 'Uploading...' : 'Upload Document'}
-      </Button>
+      <div className="space-y-4">
+        <p className="text-sm text-gray-500">
+          {isDragging ? 'Drop your file here' : 'Drag and drop your file here, or'}
+        </p>
+        <Button
+          onClick={() => document.getElementById('file-upload')?.click()}
+          disabled={isUploading || !user}
+        >
+          {isUploading ? 'Uploading...' : 'Choose File'}
+        </Button>
+      </div>
     </div>
   );
 };
