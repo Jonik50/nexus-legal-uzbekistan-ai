@@ -1,0 +1,24 @@
+
+{
+  "personas": {
+    "title": "Who Benefits From Our Solution",
+    "items": [
+      {
+        "title": "Law Firms",
+        "description": "Streamline document review and contract analysis with AI-powered tools tailored for Uzbekistan's legal framework"
+      },
+      {
+        "title": "In-house Counsel",
+        "description": "Quick access to relevant legal information and automated contract generation saves time and reduces errors"
+      },
+      {
+        "title": "Government Agencies",
+        "description": "Efficiently navigate legislation and ensure compliance with the latest regulatory requirements"
+      },
+      {
+        "title": "Entrepreneurs",
+        "description": "Get affordable access to legal expertise when starting and operating businesses in Uzbekistan"
+      }
+    ]
+  }
+}

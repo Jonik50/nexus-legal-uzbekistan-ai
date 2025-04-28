@@ -7,6 +7,8 @@ import pricing from './pricing.json';
 import footer from './footer.json';
 import form from './form.json';
 import cookies from './cookies.json';
+import testimonials from './testimonials.json';
+import personas from './personas.json';
 
 export default {
   ...meta,
@@ -16,5 +18,7 @@ export default {
   ...pricing,
   ...footer,
   ...form,
-  ...cookies
+  ...cookies,
+  ...testimonials,
+  ...personas
 };

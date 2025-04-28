@@ -1,0 +1,24 @@
+
+{
+  "testimonials": {
+    "title": "Mijozlarimiz nima deyishadi",
+    "items": [
+      {
+        "quote": "Bu AI-ga asoslangan yuridik yordamchi firmamizning hujjatlarni ko'rib chiqish usulini o'zgartirdi va har hafta bizga ko'p soatlarni tejaydi.",
+        "author": "Jon Smit",
+        "position": "Boshqaruvchi hamkor, Smit va hamkorlar"
+      },
+      {
+        "quote": "Ko'p tilli qo'llab-quvvatlash ajoyib. Biz o'zbek, rus va ingliz tillarida bir xil aniqlik bilan ishlashimiz mumkin.",
+        "author": "Sara Jonson",
+        "position": "Huquqiy maslahatchi, International Corp"
+      },
+      {
+        "quote": "O'zbekistonning huquqiy ma'lumotlar bazasi bilan integratsiya bizning tadqiqot jarayonimizni juda samarali qildi.",
+        "author": "Maykl Braun",
+        "position": "Katta advokat, Huquqiy maslahatchilar"
+      }
+    ],
+    "clients": ["O'zbekiston Milliy Banki", "BMT DP O'zbekiston", "O'zbektelekom", "Adliya vazirligi"]
+  }
+}

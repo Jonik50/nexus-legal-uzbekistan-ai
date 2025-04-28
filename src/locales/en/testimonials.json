@@ -1,0 +1,24 @@
+
+{
+  "testimonials": {
+    "title": "What Our Clients Say",
+    "items": [
+      {
+        "quote": "This AI-powered legal assistant has transformed how our firm handles document review, saving us countless hours every week.",
+        "author": "John Smith",
+        "position": "Managing Partner, Smith & Associates"
+      },
+      {
+        "quote": "The multilingual support is exceptional. We can work in Uzbek, Russian and English with equal precision.",
+        "author": "Sarah Johnson",
+        "position": "Legal Counsel, International Corp"
+      },
+      {
+        "quote": "The integration with Uzbekistan's legal database has made our research process incredibly efficient.",
+        "author": "Michael Brown",
+        "position": "Senior Attorney, Legal Consultants"
+      }
+    ],
+    "clients": ["National Bank of Uzbekistan", "UNDP Uzbekistan", "Uzbek Telecom", "Ministry of Justice"]
+  }
+}

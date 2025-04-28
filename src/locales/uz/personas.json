@@ -1,0 +1,24 @@
+
+{
+  "personas": {
+    "title": "Bizning yechimimizdan kim foyda ko'radi",
+    "items": [
+      {
+        "title": "Huquqshunoslik firmalari",
+        "description": "O'zbekiston huquqiy tizimi uchun moslashtirilgan AI yordamida hujjatlarni ko'rib chiqish va shartnomalarni tahlil qilishni optimallashtiring"
+      },
+      {
+        "title": "Korporativ huquqshunoslar",
+        "description": "Tegishli huquqiy ma'lumotlarga tez kirish va avtomatlashtirilgan shartnomalar yaratish vaqtni tejaydi va xatolarni kamaytiradi"
+      },
+      {
+        "title": "Davlat idoralari",
+        "description": "Qonunchilikda samarali navigatsiya va so'nggi tartibga solish talablariga muvofiqlikni ta'minlash"
+      },
+      {
+        "title": "Tadbirkorlar",
+        "description": "O'zbekistonda biznesni boshlash va yuritishda arzon yuridik ekspertizaga ega bo'ling"
+      }
+    ]
+  }
+}
