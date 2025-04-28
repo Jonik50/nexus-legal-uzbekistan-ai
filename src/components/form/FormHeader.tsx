@@ -1,15 +1,19 @@
 
 import React from 'react';
 import { useLanguage } from "@/context/LanguageContext";
+import { formatRussianText } from "@/utils/typography";
 
 export const FormHeader = () => {
   const { t, language } = useLanguage();
   
   // Form title with proper typography for Russian language
-  const title = t("form.title");
+  const title = language === "ru" 
+    ? formatRussianText(t("form.title"))
+    : t("form.title");
+    
   // Subtitle text with language-specific formatting
   const subtitle = language === "ru" 
-    ? "Заполните форму ниже, чтобы связаться с нами"
+    ? formatRussianText("Заполните форму ниже, чтобы связаться с нами")
     : "Fill out the form below to get in touch with us";
   
   return (
