@@ -1,16 +1,14 @@
-
 import { useState } from "react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Edit, Check, Clock, AlertTriangle, Upload } from "lucide-react";
+import { FileText, Trash, Eye, Clock, AlertTriangle, Check, Upload } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { DocumentPreview } from "./DocumentPreview";
+import { DeleteConfirmation } from "./DeleteConfirmation";
 
 interface Document {
   id: string;
@@ -19,6 +17,7 @@ interface Document {
   status: string;
   created_at: string;
   risk_level: string | null;
+  file_path: string;
 }
 
 interface DocumentTableProps {
@@ -27,6 +26,58 @@ interface DocumentTableProps {
 }
 
 export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
+  const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  const handlePreview = async (document: Document) => {
+    try {
+      setSelectedDoc(document);
+      setIsPreviewOpen(true);
+      
+      const { data: { signedUrl }, error } = await supabase
+        .storage
+        .from('documents')
+        .createSignedUrl(document.file_path, 3600); // 1 hour expiry
+
+      if (error) throw error;
+      setPreviewUrl(signedUrl);
+    } catch (error: any) {
+      toast.error("Error loading document preview");
+      console.error("Preview error:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectedDoc) return;
+
+    try {
+      // Delete from storage
+      const { error: storageError } = await supabase
+        .storage
+        .from('documents')
+        .remove([selectedDoc.file_path]);
+
+      if (storageError) throw storageError;
+
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from('documents')
+        .delete()
+        .eq('id', selectedDoc.id);
+
+      if (dbError) throw dbError;
+
+      toast.success("Document deleted successfully");
+      setIsDeleteOpen(false);
+      setSelectedDoc(null);
+    } catch (error: any) {
+      toast.error("Error deleting document");
+      console.error("Delete error:", error);
+    }
+  };
+
   const getStatusConfig = (status: string) => {
     switch (status) {
       case 'analyzed':
@@ -140,104 +191,123 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Document Name</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Risk Level</TableHead>
-            <TableHead>Upload Date</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {documents.map((doc) => {
-            const statusConfig = getStatusConfig(doc.status);
-            
-            return (
-              <TableRow 
-                key={doc.id} 
-                className="group transition-colors hover:bg-neutral-softGray/50"
-              >
-                <TableCell className="font-medium">{doc.name}</TableCell>
-                <TableCell className="text-neutral-coolGray">{doc.type}</TableCell>
-                <TableCell>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Badge 
-                          className={`inline-flex items-center gap-1 ${statusConfig.color} transition-colors`}
-                        >
-                          <statusConfig.icon className="h-3 w-3" />
-                          {doc.status}
-                        </Badge>
-                      </TooltipTrigger>
-                      <TooltipContent className="text-sm">{statusConfig.tooltip}</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </TableCell>
-                <TableCell>{getRiskBadge(doc.risk_level)}</TableCell>
-                <TableCell className="text-neutral-coolGray">
-                  {new Date(doc.created_at).toLocaleDateString()}
-                </TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2 opacity-80 transition-opacity group-hover:opacity-100">
+    <>
+      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Document Name</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Risk Level</TableHead>
+              <TableHead>Upload Date</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {documents.map((doc) => {
+              const statusConfig = getStatusConfig(doc.status);
+              
+              return (
+                <TableRow 
+                  key={doc.id} 
+                  className="group transition-colors hover:bg-neutral-softGray/50"
+                >
+                  <TableCell className="font-medium">{doc.name}</TableCell>
+                  <TableCell className="text-neutral-coolGray">{doc.type}</TableCell>
+                  <TableCell>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Button 
-                            size="sm" 
-                            variant="default"
-                            className="h-8 w-8 p-0 bg-primary/90 hover:bg-primary"
-                            disabled={doc.status !== 'analyzed'}
+                          <Badge 
+                            className={`inline-flex items-center gap-1 ${statusConfig.color} transition-colors`}
                           >
-                            <FileText size={16} />
-                          </Button>
+                            <statusConfig.icon className="h-3 w-3" />
+                            {doc.status}
+                          </Badge>
                         </TooltipTrigger>
-                        <TooltipContent>View Analysis</TooltipContent>
+                        <TooltipContent>{statusConfig.tooltip}</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            className="h-8 w-8 p-0 hover:bg-neutral-softGray"
-                          >
-                            <Download size={16} />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Download Document</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-
-                    {doc.status !== 'analyzed' && (
+                  </TableCell>
+                  <TableCell>{getRiskBadge(doc.risk_level)}</TableCell>
+                  <TableCell className="text-neutral-coolGray">
+                    {new Date(doc.created_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2 opacity-80 transition-opacity group-hover:opacity-100">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button 
                               size="sm" 
-                              variant="outline" 
-                              className="h-8 w-8 p-0 hover:bg-neutral-softGray"
+                              variant="default"
+                              className="h-8 w-8 p-0 bg-primary/90 hover:bg-primary"
+                              disabled={doc.status !== 'analyzed'}
+                              onClick={() => {
+                                setSelectedDoc(doc);
+                                setIsPreviewOpen(true);
+                                handlePreview(doc);
+                              }}
                             >
-                              <Edit size={16} />
+                              <Eye size={16} />
                             </Button>
                           </TooltipTrigger>
-                          <TooltipContent>Analyze Manually</TooltipContent>
+                          <TooltipContent>Preview Document</TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                    )}
-                  </div>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </div>
+
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              size="sm" 
+                              variant="destructive" 
+                              className="h-8 w-8 p-0"
+                              onClick={() => {
+                                setSelectedDoc(doc);
+                                setIsDeleteOpen(true);
+                              }}
+                            >
+                              <Trash size={16} />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Delete Document</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+
+      {selectedDoc && (
+        <>
+          <DocumentPreview
+            isOpen={isPreviewOpen}
+            onClose={() => {
+              setIsPreviewOpen(false);
+              setSelectedDoc(null);
+              setPreviewUrl(null);
+            }}
+            documentUrl={previewUrl ?? undefined}
+            documentName={selectedDoc.name}
+          />
+
+          <DeleteConfirmation
+            isOpen={isDeleteOpen}
+            onClose={() => {
+              setIsDeleteOpen(false);
+              setSelectedDoc(null);
+            }}
+            onConfirm={handleDelete}
+            documentName={selectedDoc.name}
+          />
+        </>
+      )}
+    </>
   );
 };
