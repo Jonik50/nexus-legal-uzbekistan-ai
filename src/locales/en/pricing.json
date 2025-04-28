@@ -1,0 +1,48 @@
+
+{
+  "pricing": {
+    "title": "Simple, Transparent Pricing",
+    "subtitle": "Choose the plan that fits your needs",
+    "plans": [
+      {
+        "name": "Free",
+        "price": "0",
+        "description": "Perfect for trying out our services",
+        "features": [
+          "3 document analyses per month",
+          "Basic template access",
+          "Community support"
+        ],
+        "cta": "Get Started"
+      },
+      {
+        "name": "Pro",
+        "price": "9",
+        "period": "per month",
+        "description": "Ideal for individuals and small teams",
+        "features": [
+          "Unlimited document analyses",
+          "Full template library access",
+          "Priority support",
+          "Lex.uz search integration",
+          "Multilingual support"
+        ],
+        "cta": "Subscribe Now"
+      },
+      {
+        "name": "Enterprise",
+        "price": "Custom",
+        "description": "For organizations with advanced needs",
+        "features": [
+          "Everything in Pro",
+          "On-premise installation",
+          "Custom integrations",
+          "Dedicated account manager",
+          "Training and onboarding",
+          "Custom features development"
+        ],
+        "cta": "Contact Us"
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+
+{
+  "form": {
+    "title": "Aloqaga chiqing",
+    "fields": {
+      "email": {
+        "label": "Email",
+        "placeholder": "your@email.com"
+      },
+      "role": {
+        "label": "Sizning rolingiz",
+        "placeholder": "Rolingizni tanlang",
+        "options": [
+          "Huquqshunos/Huquqiy mutaxassis",
+          "Biznes egasi",
+          "Talaba",
+          "Boshqa"
+        ]
+      },
+      "company_size": {
+        "label": "Kompaniya o'lchami",
+        "placeholder": "Kompaniya o'lchamini tanlang",
+        "options": [
+          "Yakka/Frilanser",
+          "2-10 xodim",
+          "11-50 xodim",
+          "51-200 xodim",
+          "201+ xodim"
+        ]
+      },
+      "language": {
+        "label": "Afzal til",
+        "placeholder": "Tilni tanlang",
+        "options": [
+          "Ingliz tili",
+          "Rus tili",
+          "O'zbek tili"
+        ]
+      }
+    },
+    "submit": "Yuborish",
+    "success": "Rahmat! Tez orada siz bilan bog'lanamiz.",
+    "error": "Nimadir noto'g'ri bo'ldi. Iltimos, qayta urinib ko'ring."
+  }
+}

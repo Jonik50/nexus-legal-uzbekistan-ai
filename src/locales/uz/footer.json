@@ -1,0 +1,38 @@
+
+{
+  "footer": {
+    "copyright": "© 2025 Legal Nexus AI. Barcha huquqlar himoyalangan.",
+    "links": {
+      "company": {
+        "title": "Kompaniya",
+        "items": [
+          { "text": "Biz haqimizda", "url": "#" },
+          { "text": "Karyera", "url": "#" },
+          { "text": "Aloqa", "url": "#" }
+        ]
+      },
+      "legal": {
+        "title": "Huquqiy ma'lumot",
+        "items": [
+          { "text": "Maxfiylik siyosati", "url": "#" },
+          { "text": "Foydalanish shartlari", "url": "#" },
+          { "text": "Ma'lumotlarni qayta ishlash shartnomasi", "url": "#" }
+        ]
+      },
+      "resources": {
+        "title": "Resurslar",
+        "items": [
+          { "text": "Blog", "url": "#" },
+          { "text": "Hujjatlar", "url": "#" },
+          { "text": "Jamiyat", "url": "#" }
+        ]
+      }
+    },
+    "contact": {
+      "title": "Biz bilan bog'laning",
+      "email": "info@legalnexus.ai",
+      "phone": "+998 90 123 4567",
+      "address": "Toshkent, O'zbekiston"
+    }
+  }
+}

@@ -1,0 +1,62 @@
+
+{
+  "problem": {
+    "title": "Legal challenges in the digital age",
+    "points": [
+      {
+        "title": "Time-consuming document reviews",
+        "description": "Legal professionals spend hours reviewing contracts and documents"
+      },
+      {
+        "title": "Complex legislation navigation",
+        "description": "Keeping up with Uzbekistan's evolving legal landscape is challenging"
+      },
+      {
+        "title": "Limited access to expertise",
+        "description": "Not everyone has access to high-quality legal expertise"
+      }
+    ]
+  },
+  "solution": {
+    "title": "Our Solution",
+    "description": "Legal Nexus AI combines cutting-edge artificial intelligence with deep understanding of Uzbekistan's legal system",
+    "features": [
+      "Automated document analysis",
+      "Integration with Lex.uz",
+      "Multilingual support",
+      "Template generation",
+      "RAG (Retrieval-Augmented Generation) technology",
+      "Local data storage and compliance"
+    ]
+  },
+  "features": {
+    "title": "Key Features",
+    "subtitle": "Powerful tools designed for Uzbekistan's legal landscape",
+    "items": [
+      {
+        "title": "Contract Analysis",
+        "description": "Review contracts in seconds with AI-powered risk assessment"
+      },
+      {
+        "title": "Template Builder",
+        "description": "Generate compliant legal templates tailored to your needs"
+      },
+      {
+        "title": "Lex.uz Integration",
+        "description": "Seamlessly search and cite Uzbekistan's legal database"
+      },
+      {
+        "title": "Multilingual Support",
+        "description": "Work in Uzbek, Russian, or English with equal precision"
+      },
+      {
+        "title": "RAG Chatbot",
+        "description": "Get answers based on the latest legal resources"
+      },
+      {
+        "title": "On-premise Storage",
+        "description": "Keep your sensitive data secure and compliant"
+      }
+    ]
+  }
+}

@@ -1,0 +1,45 @@
+
+{
+  "form": {
+    "title": "Get in Touch",
+    "fields": {
+      "email": {
+        "label": "Email",
+        "placeholder": "your@email.com"
+      },
+      "role": {
+        "label": "Your Role",
+        "placeholder": "Select your role",
+        "options": [
+          "Lawyer/Legal Professional",
+          "Business Owner",
+          "Student",
+          "Other"
+        ]
+      },
+      "company_size": {
+        "label": "Company Size",
+        "placeholder": "Select company size",
+        "options": [
+          "Solo/Freelance",
+          "2-10 employees",
+          "11-50 employees",
+          "51-200 employees",
+          "201+ employees"
+        ]
+      },
+      "language": {
+        "label": "Preferred Language",
+        "placeholder": "Select language",
+        "options": [
+          "English",
+          "Russian",
+          "Uzbek"
+        ]
+      }
+    },
+    "submit": "Submit",
+    "success": "Thank you! We'll be in touch soon.",
+    "error": "Something went wrong. Please try again."
+  }
+}

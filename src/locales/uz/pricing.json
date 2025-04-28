@@ -1,0 +1,48 @@
+
+{
+  "pricing": {
+    "title": "Oddiy, shaffof narxlash",
+    "subtitle": "Ehtiyojlaringizga mos keladigan rejani tanlang",
+    "plans": [
+      {
+        "name": "Bepul",
+        "price": "0",
+        "description": "Xizmatlarimizni sinab ko'rish uchun ideal",
+        "features": [
+          "Oyiga 3 ta hujjat tahlili",
+          "Asosiy shablonlarga kirish",
+          "Jamiyat yordami"
+        ],
+        "cta": "Boshlash"
+      },
+      {
+        "name": "Pro",
+        "price": "9",
+        "period": "oyiga",
+        "description": "Shaxslar va kichik jamoalar uchun ideal",
+        "features": [
+          "Cheksiz hujjat tahlillari",
+          "To'liq shablon kutubxonasiga kirish",
+          "Birinchi navbatdagi yordam",
+          "Lex.uz qidiruv integratsiyasi",
+          "Ko'p tilli qo'llab-quvvatlash"
+        ],
+        "cta": "Obuna bo'ling"
+      },
+      {
+        "name": "Korporativ",
+        "price": "Shaxsiy narx",
+        "description": "Keng ehtiyojli tashkilotlar uchun",
+        "features": [
+          "Pro rejasinidagi barcha funksiyalar",
+          "O'z serverida o'rnatish",
+          "Maxsus integratsiyalar",
+          "Maxsus menejer",
+          "O'qitish va o'rnatish",
+          "Maxsus funksiyalar ishlab chiqish"
+        ],
+        "cta": "Bog'lanish"
+      }
+    ]
+  }
+}

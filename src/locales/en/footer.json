@@ -1,0 +1,38 @@
+
+{
+  "footer": {
+    "copyright": "© 2025 Legal Nexus AI. All rights reserved.",
+    "links": {
+      "company": {
+        "title": "Company",
+        "items": [
+          { "text": "About Us", "url": "#" },
+          { "text": "Careers", "url": "#" },
+          { "text": "Contact", "url": "#" }
+        ]
+      },
+      "legal": {
+        "title": "Legal",
+        "items": [
+          { "text": "Privacy Policy", "url": "#" },
+          { "text": "Terms of Service", "url": "#" },
+          { "text": "Data Processing Addendum", "url": "#" }
+        ]
+      },
+      "resources": {
+        "title": "Resources",
+        "items": [
+          { "text": "Blog", "url": "#" },
+          { "text": "Documentation", "url": "#" },
+          { "text": "Community", "url": "#" }
+        ]
+      }
+    },
+    "contact": {
+      "title": "Contact Us",
+      "email": "info@legalnexus.ai",
+      "phone": "+998 90 123 4567",
+      "address": "Tashkent, Uzbekistan"
+    }
+  }
+}

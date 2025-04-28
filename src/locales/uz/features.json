@@ -1,0 +1,62 @@
+
+{
+  "problem": {
+    "title": "Raqamli davrdagi huquqiy qiyinchiliklar",
+    "points": [
+      {
+        "title": "Hujjatlarni ko'rib chiqish ko'p vaqt talab qiladi",
+        "description": "Huquqshunoslar shartnomalar va hujjatlarni ko'rib chiqishga soatlab vaqt sarflaydilar"
+      },
+      {
+        "title": "Murakkab qonunchilik navigatsiyasi",
+        "description": "O'zbekistonning rivojlanayotgan huquqiy tizimini kuzatib borish qiyin"
+      },
+      {
+        "title": "Ekspertizaga cheklangan kirish",
+        "description": "Hamma ham yuqori sifatli huquqiy ekspertizaga ega emas"
+      }
+    ]
+  },
+  "solution": {
+    "title": "Bizning yechimimiz",
+    "description": "Legal Nexus AI zamonaviy sun'iy intellekt bilan O'zbekiston huquqiy tizimini chuqur tushunishni birlashtiradi",
+    "features": [
+      "Avtomatlashtirilgan hujjat tahlili",
+      "Lex.uz bilan integratsiya",
+      "Ko'p tilli qo'llab-quvvatlash",
+      "Shablonlar yaratish",
+      "RAG (Retrieval-Augmented Generation) texnologiyasi",
+      "Mahalliy ma'lumotlarni saqlash va muvofiqlik"
+    ]
+  },
+  "features": {
+    "title": "Asosiy imkoniyatlar",
+    "subtitle": "O'zbekiston huquqiy muhiti uchun ishlab chiqilgan kuchli vositalar",
+    "items": [
+      {
+        "title": "Shartnomalarni tahlil qilish",
+        "description": "AI yordamida xavf baholash bilan shartnomalarni soniyalar ichida ko'rib chiqing"
+      },
+      {
+        "title": "Shablon yaratuvchi",
+        "description": "Ehtiyojlaringizga mos keladigan qonuniy shablonlarni yarating"
+      },
+      {
+        "title": "Lex.uz integratsiyasi",
+        "description": "O'zbekistonning huquqiy ma'lumotlar bazasida qidiruv va iqtibos keltirish"
+      },
+      {
+        "title": "Ko'p tilli qo'llab-quvvatlash",
+        "description": "O'zbek, rus yoki ingliz tillarida bir xil aniqlik bilan ishlang"
+      },
+      {
+        "title": "RAG chatbot",
+        "description": "Eng so'nggi huquqiy manbalar asosida javoblar oling"
+      },
+      {
+        "title": "On-premise saqlash",
+        "description": "Sezgir ma'lumotlaringizni xavfsiz va muvofiq saqlang"
+      }
+    ]
+  }
+}
