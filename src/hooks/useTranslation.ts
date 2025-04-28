@@ -33,12 +33,12 @@ export const useTranslation = (
                 if (fallbackValue && typeof fallbackValue === 'object' && keys[i] in fallbackValue) {
                   fallbackValue = fallbackValue[keys[i] as keyof typeof fallbackValue];
                 } else {
-                  // If we can't find the exact nested key, return the whole fallback object
+                  // If we can't find the exact nested key, return appropriate default
                   break;
                 }
               }
               
-              // Ensure we don't return raw objects
+              // Convert objects to appropriate return types
               if (Array.isArray(fallbackValue)) {
                 return fallbackValue;
               } else if (typeof fallbackValue === 'object' && fallbackValue !== null) {
@@ -50,6 +50,7 @@ export const useTranslation = (
                   return '';
                 }
               } else {
+                // Return primitives directly
                 return fallbackValue ?? '';
               }
             }
@@ -70,7 +71,7 @@ export const useTranslation = (
             }
             
             if (fallbackFound) {
-              // Process the fallback result to ensure safe return type
+              // Convert the fallback result to appropriate return type
               if (Array.isArray(enResult)) {
                 return enResult;
               } else if (typeof enResult === 'object' && enResult !== null) {
@@ -117,6 +118,7 @@ export const useTranslation = (
         }
       }
       
+      // Return primitives directly
       return result;
     } catch (error) {
       console.error(`Error accessing translation for key: ${key}`, error);
