@@ -9,6 +9,7 @@ import form from './form.json';
 import cookies from './cookies.json';
 import testimonials from './testimonials.json';
 import personas from './personas.json';
+import faq from './faq.json';
 
 export default {
   ...meta,
@@ -20,5 +21,6 @@ export default {
   ...form,
   ...cookies,
   ...testimonials,
-  ...personas
+  ...personas,
+  ...faq
 };

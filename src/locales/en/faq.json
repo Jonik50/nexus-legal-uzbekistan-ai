@@ -1,0 +1,30 @@
+
+{
+  "title": "Frequently Asked Questions",
+  "items": [
+    {
+      "question": "What is Legal Nexus AI?",
+      "answer": "Legal Nexus AI is an AI-powered legal assistant designed specifically for Uzbekistan's legal system, helping lawyers and businesses navigate legal documents, contracts, and regulations more efficiently."
+    },
+    {
+      "question": "How does the document analysis work?",
+      "answer": "Our AI analyzes legal documents by comparing them against templates and identifying potential risks, inconsistencies, and compliance issues specific to Uzbekistan's legal framework."
+    },
+    {
+      "question": "Which languages are supported?",
+      "answer": "The platform fully supports Uzbek, Russian, and English, allowing users to work in their preferred language while maintaining legal accuracy."
+    },
+    {
+      "question": "Is my data secure?",
+      "answer": "Yes, we prioritize data security. All documents are stored locally with enterprise-grade encryption, and our system complies with Uzbekistan's data protection regulations."
+    },
+    {
+      "question": "How is Legal Nexus AI different from general AI tools?",
+      "answer": "Legal Nexus AI is specifically trained on Uzbekistan's legal corpus and integrates with local legal databases like Lex.uz, providing context-aware responses tailored to local legal practice."
+    },
+    {
+      "question": "Do I need technical expertise to use Legal Nexus AI?",
+      "answer": "No, our platform is designed to be user-friendly for legal professionals regardless of technical background. The intuitive interface makes it accessible to everyone in the legal field."
+    }
+  ]
+}

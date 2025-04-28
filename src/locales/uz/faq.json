@@ -1,0 +1,30 @@
+
+{
+  "title": "Ko'p so'raladigan savollar",
+  "items": [
+    {
+      "question": "Legal Nexus AI nima?",
+      "answer": "Legal Nexus AI - O'zbekiston huquqiy tizimi uchun maxsus ishlab chiqarilgan, advokatlarga va biznesga huquqiy hujjatlar, shartnomalar va qonunlar bilan samaraliroq ishlashga yordam beruvchi sun'iy intellekt asosidagi huquqiy yordamchi."
+    },
+    {
+      "question": "Hujjatlar tahlili qanday ishlaydi?",
+      "answer": "Bizning sun'iy intellektimiz huquqiy hujjatlarni namunalar bilan solishtirish orqali tahlil qiladi va O'zbekiston qonunchiligiga xos bo'lgan potensial xatarlarni, nomuvofiqliklarni va muammolarni aniqlaydi."
+    },
+    {
+      "question": "Qaysi tillar qo'llab-quvvatlanadi?",
+      "answer": "Platforma o'zbek, rus va ingliz tillarini to'liq qo'llab-quvvatlaydi, foydalanuvchilarga huquqiy aniqlikni saqlab qolgan holda o'zlari xohlagan tilda ishlash imkonini beradi."
+    },
+    {
+      "question": "Mening ma'lumotlarim xavfsizmi?",
+      "answer": "Ha, biz ma'lumotlar xavfsizligiga ustuvorlik beramiz. Barcha hujjatlar korxona darajasidagi shifrlash bilan mahalliy saqlanadi va bizning tizimimiz O'zbekistonning ma'lumotlarni himoya qilish bo'yicha qonunchiligiga mos keladi."
+    },
+    {
+      "question": "Legal Nexus AI umumiy AI vositalaridan qanday farq qiladi?",
+      "answer": "Legal Nexus AI maxsus ravishda O'zbekistonning huquqiy bazasi asosida o'qitilgan va Lex.uz kabi mahalliy huquqiy ma'lumotlar bazalari bilan integratsiyalashgan, mahalliy huquqiy amaliyotga moslashtirilgan kontekstga asoslangan javoblar taqdim etadi."
+    },
+    {
+      "question": "Legal Nexus AI dan foydalanish uchun texnik bilim kerakmi?",
+      "answer": "Yo'q, bizning platformamiz texnik bilimlaridan qat'i nazar, huquqshunoslar uchun qulay bo'lish uchun ishlab chiqilgan. Intuitiv interfeys uni huquq sohasidagi barcha mutaxassislar uchun qulaylashtiradi."
+    }
+  ]
+}
