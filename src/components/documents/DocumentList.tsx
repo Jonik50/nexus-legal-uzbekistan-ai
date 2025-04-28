@@ -35,11 +35,11 @@ export const DocumentList = () => {
           if (payload.eventType === 'UPDATE') {
             setDocuments(current =>
               current.map(doc =>
-                doc.id === payload.new.id ? { ...doc, ...payload.new } : doc
+                doc.id === (payload.new as Document).id ? { ...doc, ...(payload.new as Document) } : doc
               )
             );
           } else if (payload.eventType === 'INSERT') {
-            setDocuments(current => [...current, payload.new]);
+            setDocuments(current => [...current, payload.new as Document]);
           }
         }
       )
