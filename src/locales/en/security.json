@@ -1,0 +1,25 @@
+
+{
+  "security": {
+    "title": "Secure and Reliable Protection",
+    "description": "Your data and documents are protected with state-of-the-art security measures",
+    "features": [
+      {
+        "title": "Data Encryption",
+        "description": "All data and documents are stored with high-level encryption"
+      },
+      {
+        "title": "Protected Archiving",
+        "description": "Your documents and data are always protected and backed up against any loss"
+      },
+      {
+        "title": "Secure API Integration",
+        "description": "All our API connections are secured with the highest security protocols"
+      },
+      {
+        "title": "Legal Compliance",
+        "description": "Fully compliant with Uzbekistan and international data protection standards"
+      }
+    ]
+  }
+}

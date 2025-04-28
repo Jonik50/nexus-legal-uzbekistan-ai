@@ -35,6 +35,11 @@ export const SecuritySection = () => {
   }, []);
 
   const securityIcons = [Shield, Database, Code, FileText];
+  
+  // Get security features and ensure it's an array
+  const securityFeatures = Array.isArray(t("security.features")) 
+    ? t("security.features") 
+    : [];
 
   return (
     <section className="py-20 md:py-28 bg-gradient-to-b from-white to-neutral-50 relative" ref={sectionRef}>
@@ -50,8 +55,8 @@ export const SecuritySection = () => {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16">
-          {t("security.features").map((feature: any, index: number) => {
-            const Icon = securityIcons[index];
+          {securityFeatures.map((feature: any, index: number) => {
+            const Icon = securityIcons[index % securityIcons.length];
             return (
               <div
                 key={index}

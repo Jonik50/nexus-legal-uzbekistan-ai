@@ -1,0 +1,25 @@
+
+{
+  "security": {
+    "title": "Xavfsiz va ishonchli himoya",
+    "description": "Sizning ma'lumotlaringiz va hujjatlaringiz eng zamonaviy xavfsizlik choralari bilan himoyalangan",
+    "features": [
+      {
+        "title": "Ma'lumotlarni shifrlash",
+        "description": "Barcha ma'lumotlar va hujjatlar yuqori darajadagi shifrlash bilan saqlangan"
+      },
+      {
+        "title": "Himoyalangan arxivlash",
+        "description": "Hujjatlaringiz va ma'lumotlaringiz doimo himoyalangan va har qanday yo'qolishlarga qarshi zahiralangan"
+      },
+      {
+        "title": "Xavfsiz API integrasiyasi",
+        "description": "Barcha API ulanishlarimiz eng yuqori xavfsizlik protokollari bilan himoyalangan"
+      },
+      {
+        "title": "Huquqiy muvofiqlik",
+        "description": "O'zbekiston va xalqaro ma'lumotlarni himoya qilish standartlariga to'liq muvofiq"
+      }
+    ]
+  }
+}

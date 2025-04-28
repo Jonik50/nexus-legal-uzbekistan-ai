@@ -11,6 +11,7 @@ import testimonials from './testimonials.json';
 import personas from './personas.json';
 import faq from './faq.json';
 import advantages from './advantages.json';
+import security from './security.json';
 
 export default {
   ...meta,
@@ -24,5 +25,6 @@ export default {
   ...testimonials,
   ...personas,
   ...faq,
-  ...advantages
+  ...advantages,
+  ...security
 };
