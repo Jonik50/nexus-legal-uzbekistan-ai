@@ -30,10 +30,10 @@ export const HeroSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {t("hero.hero.title") || "AI Lawyer for Uzbekistan"}
+              {t("hero.title") || "AI Lawyer for Uzbekistan"}
             </h1>
             <p className="text-xl text-neutral-gray mb-8 max-w-xl mx-auto lg:mx-0">
-              {t("hero.hero.subtitle") || "Optimize your legal work with the first AI assistant adapted to the laws of Uzbekistan"}
+              {t("hero.subtitle") || "Optimize your legal work with the first AI assistant adapted to the laws of Uzbekistan"}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button 
@@ -41,7 +41,7 @@ export const HeroSection = () => {
                 className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" 
                 onClick={handleTryFreeClick}
               >
-                {t("hero.hero.cta.primary") || "Try for free"}
+                {t("hero.cta.primary") || "Try for free"}
               </Button>
               <Button 
                 variant="outline" 
@@ -49,7 +49,7 @@ export const HeroSection = () => {
                 className="border-2 border-primary text-primary hover:bg-primary/5 text-lg px-8 py-6 rounded-xl transition-colors"
                 onClick={handleRequestDemoClick}
               >
-                {t("hero.hero.cta.secondary") || "Request demo"}
+                {t("hero.cta.secondary") || "Request demo"}
               </Button>
             </div>
           </div>
