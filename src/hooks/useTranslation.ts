@@ -61,16 +61,29 @@ export const useTranslation = (
             }
           }
           
-          // Return key as last resort
+          // Return empty string or default value as last resort
           console.warn(`Translation key not found: ${key}`);
-          return key;
+          
+          // Return different defaults based on context
+          if (key.includes('.items') || key.includes('.rows') || key.includes('.headers')) {
+            return [];
+          } else if (key.includes('.cta')) {
+            return '';
+          } else {
+            return key;
+          }
         }
       }
       
       return result;
     } catch (error) {
       console.error(`Error accessing translation for key: ${key}`, error);
-      return key;
+      // Return different defaults based on context
+      if (key.includes('.items') || key.includes('.rows') || key.includes('.headers')) {
+        return [];
+      } else {
+        return key;
+      }
     }
   };
 

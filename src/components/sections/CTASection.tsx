@@ -1,96 +1,53 @@
 
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { LeadForm } from "../LeadForm";
 
 export const CTASection = () => {
   const { t } = useLanguage();
-  const sectionRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    const animElements = sectionRef.current?.querySelectorAll(".animate-stagger");
-    animElements?.forEach((el, i) => {
-      const element = el as HTMLElement;
-      element.style.animationDelay = `${i * 60}ms`;
-      observer.observe(element);
-    });
-
-    return () => {
-      animElements?.forEach((el) => {
-        observer.unobserve(el);
-      });
-    };
-  }, []);
-
-  const trackCTAClick = (ctaName: string) => {
-    window.dispatchEvent(new CustomEvent("cta_click", { detail: { cta: ctaName } }));
-  };
-
-  // Handlers for CTA buttons
   const handleTryFreeClick = () => {
-    trackCTAClick("final_cta_try_free");
+    window.dispatchEvent(new CustomEvent("cta_click", { detail: { cta: "cta_try_free" } }));
     navigate("/auth", { state: { activeTab: "signup" } });
   };
 
   const handleRequestDemoClick = () => {
-    trackCTAClick("final_cta_request_demo");
+    window.dispatchEvent(new CustomEvent("cta_click", { detail: { cta: "cta_request_demo" } }));
     navigate("/auth", { state: { activeTab: "signup", isDemoRequest: true } });
   };
 
   return (
-    <section id="contact" className="py-20 md:py-28 bg-gradient-to-b from-white to-neutral-50 relative" ref={sectionRef}>
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(0,85,255,0.08),transparent_60%)] pointer-events-none"></div>
-      <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-neutral-softGray to-transparent"></div>
+    <section className="py-20 md:py-28 bg-primary relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.15),transparent_60%)] pointer-events-none"></div>
+      <div className="absolute right-0 bottom-0 w-1/2 h-1/2 bg-[radial-gradient(circle_at_bottom_right,rgba(0,0,0,0.1),transparent_70%)] pointer-events-none"></div>
       
-      <div className="container-custom relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="animate-stagger">
-            <h2 className="section-title">
-              {t("cta.title") || "Ready to optimize your legal work?"}
-            </h2>
-            <p className="text-xl text-neutral-gray mb-8">
-              {t("cta.description") || "Join leading legal firms in Uzbekistan using Legal Nexus AI"}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                size="lg" 
-                className="btn-primary"
-                onClick={handleTryFreeClick}
-              >
-                {t("cta.primary") || "Try for free"}
-              </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="btn-secondary"
-                onClick={handleRequestDemoClick}
-              >
-                {t("cta.secondary") || "Request demo"}
-              </Button>
-            </div>
-          </div>
-          
-          <div className="animate-stagger">
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-neutral-100">
-              <LeadForm />
-            </div>
-          </div>
+      <div className="container-custom relative z-10 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+          {t("cta.title") || "Ready to optimize your legal work?"}
+        </h2>
+        <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
+          {t("cta.description") || "Join leading legal firms in Uzbekistan using Legal Nexus AI"}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button 
+            size="lg" 
+            variant="default" 
+            className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            onClick={handleTryFreeClick}
+          >
+            {t("cta.primary") || "Try for free"}
+          </Button>
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="border-2 border-white text-white hover:bg-white/10 text-lg px-8 py-6 rounded-xl transition-colors"
+            onClick={handleRequestDemoClick}
+          >
+            {t("cta.secondary") || "Request demo"}
+          </Button>
         </div>
       </div>
     </section>

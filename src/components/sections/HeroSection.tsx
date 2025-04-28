@@ -30,10 +30,10 @@ export const HeroSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {t("title")}
+              {t("title") || "AI-Powered Legal Assistant for Uzbekistan"}
             </h1>
             <p className="text-xl text-neutral-gray mb-8 max-w-xl mx-auto lg:mx-0">
-              {t("subtitle")}
+              {t("subtitle") || "Streamline your legal work with the first AI assistant fully adapted to Uzbekistan's legislation"}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button 
@@ -41,7 +41,7 @@ export const HeroSection = () => {
                 className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" 
                 onClick={handleTryFreeClick}
               >
-                {t("cta.primary")}
+                {(t("cta.primary") as string) || "Try for Free"}
               </Button>
               <Button 
                 variant="outline" 
@@ -49,7 +49,7 @@ export const HeroSection = () => {
                 className="border-2 border-primary text-primary hover:bg-primary/5 text-lg px-8 py-6 rounded-xl transition-colors"
                 onClick={handleRequestDemoClick}
               >
-                {t("cta.secondary")}
+                {(t("cta.secondary") as string) || "Request Demo"}
               </Button>
             </div>
           </div>

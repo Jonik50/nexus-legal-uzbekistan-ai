@@ -1,11 +1,9 @@
 
 {
-  "hero": {
-    "title": "O'zbekiston uchun AI huquqiy yordamchisi",
-    "subtitle": "O'zbekiston qonunchiligiga to'liq moslashtirilgan birinchi AI yordamchisi bilan huquqiy ishlaringizni optimallashtiring",
-    "cta": {
-      "primary": "Bepul sinab ko'ring",
-      "secondary": "Demo so'rang"
-    }
+  "title": "O'zbekiston uchun AI huquqiy yordamchisi",
+  "subtitle": "O'zbekiston qonunchiligiga to'liq moslashtirilgan birinchi AI yordamchisi bilan huquqiy ishlaringizni optimallashtiring",
+  "cta": {
+    "primary": "Bepul sinab ko'ring",
+    "secondary": "Demo so'rang"
   }
 }
