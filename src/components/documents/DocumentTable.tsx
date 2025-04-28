@@ -74,22 +74,29 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
           <DocumentTableHeader />
           <TableBody>
             {[...Array(3)].map((_, index) => (
-              <DocumentRow
-                key={index}
-                document={{
-                  id: `skeleton-${index}`,
-                  name: <Skeleton className="h-4 w-[250px]" />,
-                  type: <Skeleton className="h-4 w-[100px]" />,
-                  status: <Skeleton className="h-6 w-[120px]" />,
-                  risk_level: <Skeleton className="h-6 w-[80px]" />,
-                  created_at: <Skeleton className="h-4 w-[100px]" />,
-                  file_path: '',
-                  updated_at: '',
-                  user_id: ''
-                }}
-                onPreview={() => {}}
-                onDelete={() => {}}
-              />
+              <tr key={`skeleton-row-${index}`} className="border-b transition-colors hover:bg-neutral-softGray/50">
+                <td className="p-4 font-medium">
+                  <Skeleton className="h-4 w-[250px]" />
+                </td>
+                <td className="p-4 text-neutral-coolGray">
+                  <Skeleton className="h-4 w-[100px]" />
+                </td>
+                <td className="p-4">
+                  <Skeleton className="h-6 w-[120px]" />
+                </td>
+                <td className="p-4">
+                  <Skeleton className="h-6 w-[80px]" />
+                </td>
+                <td className="p-4 text-neutral-coolGray">
+                  <Skeleton className="h-4 w-[100px]" />
+                </td>
+                <td className="p-4 text-right">
+                  <div className="flex justify-end gap-2">
+                    <Skeleton className="h-8 w-8 rounded" />
+                    <Skeleton className="h-8 w-8 rounded" />
+                  </div>
+                </td>
+              </tr>
             ))}
           </TableBody>
         </Table>
@@ -132,7 +139,7 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
               setPreviewUrl(null);
             }}
             documentUrl={previewUrl ?? undefined}
-            documentName={selectedDoc.name}
+            documentName={selectedDoc.name as string}
           />
 
           <DeleteConfirmation
@@ -142,7 +149,7 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
               setSelectedDoc(null);
             }}
             onConfirm={handleDelete}
-            documentName={selectedDoc.name}
+            documentName={selectedDoc.name as string}
           />
         </>
       )}

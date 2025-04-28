@@ -1,12 +1,12 @@
 
 export interface Document {
   id: string;
-  name: string;
-  type: string;
-  status: string;
-  created_at: string;
+  name: string | React.ReactNode;
+  type: string | React.ReactNode;
+  status: string | React.ReactNode;
+  created_at: string | React.ReactNode;
   updated_at: string;
-  risk_level: string | null;
+  risk_level: string | React.ReactNode | null;
   file_path: string;
   user_id: string;
 }
