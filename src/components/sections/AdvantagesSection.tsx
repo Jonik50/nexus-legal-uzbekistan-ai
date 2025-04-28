@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { FileText, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import {
   Table,
   TableBody,

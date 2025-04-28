@@ -35,8 +35,9 @@ export const TestimonialsSection = () => {
     };
   }, []);
 
-  const testimonials = t("testimonials.items");
-  const clients = t("testimonials.clients");
+  // Ensure testimonials and clients are always arrays
+  const testimonials = Array.isArray(t("testimonials.items")) ? t("testimonials.items") : [];
+  const clients = Array.isArray(t("testimonials.clients")) ? t("testimonials.clients") : [];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -44,6 +45,9 @@ export const TestimonialsSection = () => {
     }, 5000);
     return () => clearInterval(interval);
   }, [testimonials.length]);
+
+  // Get the title safely
+  const testimonialsTitle = t("testimonials.title") || "What Our Clients Say";
 
   return (
     <section className="py-20 md:py-28 bg-gradient-to-b from-white to-neutral-softGray relative overflow-hidden" ref={sectionRef}>
@@ -53,7 +57,7 @@ export const TestimonialsSection = () => {
 
       <div className="container-custom relative z-10">
         <h2 className="animate-stagger section-title text-center">
-          {t("testimonials.title")}
+          {testimonialsTitle}
         </h2>
 
         <div className="animate-stagger mt-16">
@@ -78,14 +82,14 @@ export const TestimonialsSection = () => {
                       />
                     ))}
                   </div>
-                  <p className="text-lg italic mb-6 relative z-10">"{testimonial.quote}"</p>
+                  <p className="text-lg italic mb-6 relative z-10">"{testimonial.quote || `Testimonial ${index + 1}`}"</p>
                   <div className="flex items-center">
                     <div className="bg-primary/10 rounded-full w-12 h-12 flex items-center justify-center text-primary font-bold">
-                      {testimonial.author.charAt(0)}
+                      {testimonial.author ? testimonial.author.charAt(0) : "U"}
                     </div>
                     <div className="ml-4">
-                      <p className="font-bold">{testimonial.author}</p>
-                      <p className="text-neutral-gray text-sm">{testimonial.position}</p>
+                      <p className="font-bold">{testimonial.author || "Unknown Author"}</p>
+                      <p className="text-neutral-gray text-sm">{testimonial.position || "Position"}</p>
                     </div>
                   </div>
                 </div>

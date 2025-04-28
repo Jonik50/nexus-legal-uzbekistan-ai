@@ -61,11 +61,11 @@ export const useTranslation = (
             }
           }
           
-          // Return empty string or default value as last resort
+          // Return empty array or string as last resort based on context
           console.warn(`Translation key not found: ${key}`);
           
           // Return different defaults based on context
-          if (key.includes('.items') || key.includes('.rows') || key.includes('.headers')) {
+          if (key.includes('.items') || key.includes('.rows') || key.includes('.headers') || key.includes('.points') || key.includes('.features') || key.includes('.clients')) {
             return [];
           } else if (key.includes('.cta')) {
             return '';
@@ -81,7 +81,7 @@ export const useTranslation = (
       if (result && typeof result === 'object') {
         console.warn(`Translation key returns an object instead of a primitive: ${key}`);
         
-        if (key.includes('.items') || key.includes('.rows') || key.includes('.headers')) {
+        if (key.includes('.items') || key.includes('.rows') || key.includes('.headers') || key.includes('.points') || key.includes('.features') || key.includes('.clients')) {
           return Array.isArray(result) ? result : [];
         } else {
           // If we have JSON.stringify the object, it will produce "[object Object]" when rendered
@@ -94,7 +94,7 @@ export const useTranslation = (
     } catch (error) {
       console.error(`Error accessing translation for key: ${key}`, error);
       // Return different defaults based on context
-      if (key.includes('.items') || key.includes('.rows') || key.includes('.headers')) {
+      if (key.includes('.items') || key.includes('.rows') || key.includes('.headers') || key.includes('.points') || key.includes('.features') || key.includes('.clients')) {
         return [];
       } else {
         return key;

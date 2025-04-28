@@ -35,6 +35,14 @@ export const ProblemSolutionSection = () => {
   }, []);
 
   const problemIcons = [FileText, Search, Users];
+  
+  // Ensure problem points and solution features are arrays
+  const problemTitle = t("problem.title") || "Legal challenges in the digital age";
+  const problemPoints = Array.isArray(t("problem.points")) ? t("problem.points") : [];
+  
+  const solutionTitle = t("solution.title") || "Our Solution";
+  const solutionDescription = t("solution.description") || "Legal Nexus AI combines cutting-edge artificial intelligence with deep understanding of Uzbekistan's legal system";
+  const solutionFeatures = Array.isArray(t("solution.features")) ? t("solution.features") : [];
 
   return (
     <section className="py-20 md:py-28 bg-gradient-to-b from-white to-neutral-50 relative" ref={sectionRef}>
@@ -45,11 +53,11 @@ export const ProblemSolutionSection = () => {
         {/* Problem Section */}
         <div className="mb-24 md:mb-32">
           <h2 className="animate-stagger section-title text-center">
-            {t("problem.title")}
+            {problemTitle}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-            {t("problem.points").map((point: any, index: number) => {
-              const Icon = problemIcons[index];
+            {problemPoints.map((point: any, index: number) => {
+              const Icon = problemIcons[index % problemIcons.length];
               return (
                 <div 
                   key={index} 
@@ -58,8 +66,8 @@ export const ProblemSolutionSection = () => {
                   <div className="bg-primary/10 p-4 rounded-full mb-6">
                     <Icon size={32} className="text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4">{point.title}</h3>
-                  <p className="text-neutral-gray">{point.description}</p>
+                  <h3 className="text-xl font-bold mb-4">{point.title || `Point ${index + 1}`}</h3>
+                  <p className="text-neutral-gray">{point.description || "No description provided"}</p>
                 </div>
               );
             })}
@@ -81,13 +89,13 @@ export const ProblemSolutionSection = () => {
           </div>
           <div className="order-1 lg:order-2">
             <h2 className="animate-stagger section-title">
-              {t("solution.title")}
+              {solutionTitle}
             </h2>
             <p className="animate-stagger text-lg text-neutral-gray mb-8">
-              {t("solution.description")}
+              {solutionDescription}
             </p>
             <ul className="space-y-4">
-              {t("solution.features").map((feature: string, index: number) => (
+              {solutionFeatures.map((feature: string, index: number) => (
                 <li key={index} className="animate-stagger flex items-center">
                   <div className="rounded-full bg-accent/20 p-1 mr-3">
                     <svg
