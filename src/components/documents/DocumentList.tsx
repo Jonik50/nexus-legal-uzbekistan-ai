@@ -3,15 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { DocumentTable } from "./DocumentTable";
-
-interface Document {
-  id: string;
-  name: string;
-  type: string;
-  status: string;
-  created_at: string;
-  risk_level: string | null;
-}
+import { Document } from "./types";
 
 export const DocumentList = () => {
   const [documents, setDocuments] = useState<Document[]>([]);

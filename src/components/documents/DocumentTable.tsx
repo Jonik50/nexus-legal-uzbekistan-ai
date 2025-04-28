@@ -9,16 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { DocumentPreview } from "./DocumentPreview";
 import { DeleteConfirmation } from "./DeleteConfirmation";
-
-interface Document {
-  id: string;
-  name: string;
-  type: string;
-  status: string;
-  created_at: string;
-  risk_level: string | null;
-  file_path: string;
-}
+import { Document } from "./types";
 
 interface DocumentTableProps {
   documents: Document[];
