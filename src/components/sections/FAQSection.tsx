@@ -39,7 +39,7 @@ export const FAQSection = () => {
     };
   }, []);
 
-  // Ensure faqs is always an array
+  // Ensure faq data is properly structured
   const faqTitle = t("faq.title") || "Frequently Asked Questions";
   const faqItems = Array.isArray(t("faq.items")) ? t("faq.items") : [];
 

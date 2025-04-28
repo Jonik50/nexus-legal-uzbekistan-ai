@@ -36,7 +36,7 @@ export const ProblemSolutionSection = () => {
 
   const problemIcons = [FileText, Search, Users];
   
-  // Ensure problem points and solution features are arrays
+  // Ensure problem points and solution features are arrays with safe access
   const problemTitle = t("problem.title") || "Legal challenges in the digital age";
   const problemPoints = Array.isArray(t("problem.points")) ? t("problem.points") : [];
   

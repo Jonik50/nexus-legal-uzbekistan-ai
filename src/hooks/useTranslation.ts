@@ -5,7 +5,7 @@ export const useTranslation = (
   translations: Record<Language, Record<string, any>>,
   language: Language
 ) => {
-  const t = (key: string): any => {
+  const t = (key: string): string | string[] | number | boolean | null => {
     try {
       // Get current language translations
       const translationObj = translations[language];
@@ -38,7 +38,20 @@ export const useTranslation = (
                 }
               }
               
-              return fallbackValue;
+              // Ensure we don't return raw objects
+              if (Array.isArray(fallbackValue)) {
+                return fallbackValue;
+              } else if (typeof fallbackValue === 'object' && fallbackValue !== null) {
+                // Object fallbacks should return empty arrays or strings based on context
+                if (key.includes('.items') || key.includes('.points') || key.includes('.rows') || 
+                    key.includes('.headers') || key.includes('.features') || key.includes('.clients')) {
+                  return [];
+                } else {
+                  return '';
+                }
+              } else {
+                return fallbackValue ?? '';
+              }
             }
           }
           
@@ -57,7 +70,19 @@ export const useTranslation = (
             }
             
             if (fallbackFound) {
-              return enResult;
+              // Process the fallback result to ensure safe return type
+              if (Array.isArray(enResult)) {
+                return enResult;
+              } else if (typeof enResult === 'object' && enResult !== null) {
+                if (key.includes('.items') || key.includes('.points') || key.includes('.rows') || 
+                    key.includes('.headers') || key.includes('.features') || key.includes('.clients')) {
+                  return [];
+                } else {
+                  return '';
+                }
+              } else {
+                return enResult ?? '';
+              }
             }
           }
           
@@ -71,12 +96,15 @@ export const useTranslation = (
         }
       }
       
-      // Extra safety check - if the result is still an object that can't be rendered directly
+      // Final safety check - ensure we don't return raw objects
       if (result === null || result === undefined) {
         return '';
       }
       
-      if (typeof result === 'object' && !Array.isArray(result)) {
+      // Handle arrays and objects safely
+      if (Array.isArray(result)) {
+        return result;
+      } else if (typeof result === 'object') {
         console.warn(`Translation key returns an object instead of a primitive: ${key}`);
         
         // Return empty array for array-like keys

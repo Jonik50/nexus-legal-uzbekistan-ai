@@ -1,12 +1,11 @@
 
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
 
 export const HeroSection = () => {
   const { t } = useLanguage();
-  const heroRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const trackCTAClick = (ctaName: string) => {

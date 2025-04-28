@@ -35,7 +35,8 @@ export const TestimonialsSection = () => {
     };
   }, []);
 
-  // Ensure testimonials and clients are always arrays
+  // Ensure testimonials and clients are always arrays with safe access
+  const testimonialsTitle = t("testimonials.title") || "What Our Clients Say";
   const testimonialItems = Array.isArray(t("testimonials.items")) ? t("testimonials.items") : [];
   const clientItems = Array.isArray(t("testimonials.clients")) ? t("testimonials.clients") : [];
 
@@ -48,9 +49,6 @@ export const TestimonialsSection = () => {
     
     return () => clearInterval(interval);
   }, [testimonialItems.length]);
-
-  // Get the title safely
-  const testimonialsTitle = t("testimonials.title") || "What Our Clients Say";
 
   return (
     <section className="py-20 md:py-28 bg-gradient-to-b from-white to-neutral-softGray relative overflow-hidden" ref={sectionRef}>
