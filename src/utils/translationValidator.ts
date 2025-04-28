@@ -1,128 +1,110 @@
 
-import en from "../locales/en/index";
-import ru from "../locales/ru/index";
-import uz from "../locales/uz/index";
+import en from "@/locales/en/index";
+import ru from "@/locales/ru/index";
+import uz from "@/locales/uz/index";
 
-type ValidationIssue = {
-  language: string;
-  key: string;
-  expected: string;
-  actual: string | undefined;
-  severity: 'error' | 'warning';
+type ValidationResult = {
+  missingKeys: string[];
+  structuralDifferences: string[];
 };
 
 /**
- * Validates that all necessary translation keys exist across languages
- * This function is intended to be used during development to catch missing translations
+ * Compare objects recursively to find missing keys
  */
-export function validateTranslations(): ValidationIssue[] {
-  const issues: ValidationIssue[] = [];
-  const requiredArrays = [
-    { key: 'features.items', expected: 'array' },
-    { key: 'faq.items', expected: 'array' },
-    { key: 'testimonials.items', expected: 'array' },
-    { key: 'personas.items', expected: 'array' },
-    { key: 'advantages.table.headers', expected: 'array' },
-    { key: 'advantages.table.rows', expected: 'array' },
-    { key: 'security.features', expected: 'array' },
-  ];
-
-  // Check each language for each required array
-  const languages = { en, ru, uz };
-  Object.entries(languages).forEach(([lang, translations]) => {
-    requiredArrays.forEach(({ key, expected }) => {
-      const keyPath = key.split('.');
-      let value: any = translations;
-      
-      // Navigate through the object path
-      for (const k of keyPath) {
-        value = value?.[k];
-        if (value === undefined) break;
-      }
-      
-      // Check if the value exists and is an array
-      if (value === undefined) {
-        issues.push({
-          language: lang,
-          key,
-          expected,
-          actual: 'undefined',
-          severity: 'error'
-        });
-      } else if (expected === 'array' && !Array.isArray(value)) {
-        issues.push({
-          language: lang,
-          key,
-          expected,
-          actual: typeof value,
-          severity: 'error'
-        });
-      }
-    });
-  });
-
-  return issues;
-}
-
-/**
- * Logs validation issues to the console
- * This can be called during development to catch translation issues
- */
-export function logTranslationIssues(): void {
-  const issues = validateTranslations();
-  
-  if (issues.length === 0) {
-    console.log('✓ All translations validated successfully');
+function compareObjects(
+  source: any,
+  target: any,
+  path: string = "",
+  results: ValidationResult
+): void {
+  // Handle arrays
+  if (Array.isArray(source)) {
+    if (!Array.isArray(target)) {
+      results.structuralDifferences.push(
+        `${path}: Expected array but found ${typeof target}`
+      );
+    }
     return;
   }
-  
-  console.group('Translation Validation Issues');
-  issues.forEach(issue => {
-    const method = issue.severity === 'error' ? 'error' : 'warn';
-    console[method](
-      `[${issue.language}] ${issue.key}: Expected ${issue.expected}, got ${issue.actual}`
-    );
-  });
-  console.groupEnd();
-}
 
-// This can be automatically run in development environments
-if (process.env.NODE_ENV === 'development') {
-  // Uncomment to enable automatic validation during development
-  // logTranslationIssues();
+  // Handle objects
+  if (typeof source === "object" && source !== null) {
+    if (typeof target !== "object" || target === null) {
+      results.structuralDifferences.push(
+        `${path}: Expected object but found ${typeof target}`
+      );
+      return;
+    }
+
+    // Check each key in source object
+    for (const key in source) {
+      const newPath = path ? `${path}.${key}` : key;
+      
+      if (!(key in target)) {
+        results.missingKeys.push(newPath);
+      } else {
+        compareObjects(source[key], target[key], newPath, results);
+      }
+    }
+  }
 }
 
 /**
- * Checks if a path exists in a nested object
- * This is useful for checking if a translation key exists
+ * Validates translation object structure against a reference language (usually English)
  */
-export function pathExists(obj: any, path: string): boolean {
-  const keys = path.split('.');
-  let current = obj;
-  
-  for (const key of keys) {
-    if (current === undefined || current === null || !Object.prototype.hasOwnProperty.call(current, key)) {
-      return false;
-    }
-    current = current[key];
+export function validateTranslations(reference = "en"): Record<string, ValidationResult> {
+  const referenceObj = reference === "en" ? en : reference === "ru" ? ru : uz;
+  const results: Record<string, ValidationResult> = {};
+
+  // Compare each language against reference
+  for (const lang of ["en", "ru", "uz"]) {
+    if (lang === reference) continue;
+    
+    const targetObj = lang === "en" ? en : lang === "ru" ? ru : uz;
+    
+    results[lang] = {
+      missingKeys: [],
+      structuralDifferences: [],
+    };
+
+    compareObjects(referenceObj, targetObj, "", results[lang]);
   }
-  
-  return true;
+
+  // Log results to console in development
+  if (process.env.NODE_ENV === "development") {
+    console.group("Translation Validation Results");
+    Object.entries(results).forEach(([lang, result]) => {
+      const hasIssues = result.missingKeys.length > 0 || result.structuralDifferences.length > 0;
+      
+      if (hasIssues) {
+        console.group(`Issues in ${lang} translations`);
+        
+        if (result.missingKeys.length > 0) {
+          console.group(`Missing keys (${result.missingKeys.length}):`);
+          result.missingKeys.forEach(key => console.log(`- ${key}`));
+          console.groupEnd();
+        }
+        
+        if (result.structuralDifferences.length > 0) {
+          console.group(`Structural differences (${result.structuralDifferences.length}):`);
+          result.structuralDifferences.forEach(diff => console.log(`- ${diff}`));
+          console.groupEnd();
+        }
+        
+        console.groupEnd();
+      } else {
+        console.log(`✅ ${lang}: No issues found`);
+      }
+    });
+    console.groupEnd();
+  }
+
+  return results;
 }
 
-/**
- * Gets a value from a nested object by path
- */
-export function getByPath(obj: any, path: string): any {
-  const keys = path.split('.');
-  let current = obj;
-  
-  for (const key of keys) {
-    if (current === undefined || current === null) {
-      return undefined;
-    }
-    current = current[key];
-  }
-  
-  return current;
+// Auto-run in development
+if (process.env.NODE_ENV === "development") {
+  setTimeout(() => {
+    validateTranslations();
+  }, 1000);
 }

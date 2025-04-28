@@ -12,6 +12,7 @@ import personas from './personas.json';
 import faq from './faq.json';
 import advantages from './advantages.json';
 import security from './security.json';
+import cta from './cta.json';
 
 export default {
   ...meta,
@@ -26,5 +27,6 @@ export default {
   ...personas,
   ...faq,
   ...advantages,
-  ...security
+  ...security,
+  ...cta
 };

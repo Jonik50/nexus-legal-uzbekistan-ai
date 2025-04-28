@@ -62,10 +62,10 @@ export const CTASection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="animate-stagger">
             <h2 className="section-title">
-              {t("cta.title")}
+              {t("cta.title") || "Ready to optimize your legal work?"}
             </h2>
             <p className="text-xl text-neutral-gray mb-8">
-              {t("cta.description")}
+              {t("cta.description") || "Join leading legal firms in Uzbekistan using Legal Nexus AI"}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
@@ -73,7 +73,7 @@ export const CTASection = () => {
                 className="btn-primary"
                 onClick={handleTryFreeClick}
               >
-                {t("cta.primary")}
+                {t("cta.primary") || "Try for free"}
               </Button>
               <Button 
                 variant="outline" 
@@ -81,7 +81,7 @@ export const CTASection = () => {
                 className="btn-secondary"
                 onClick={handleRequestDemoClick}
               >
-                {t("cta.secondary")}
+                {t("cta.secondary") || "Request demo"}
               </Button>
             </div>
           </div>

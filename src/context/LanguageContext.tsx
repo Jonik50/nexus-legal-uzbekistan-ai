@@ -46,6 +46,12 @@ const defaultFallbacks = {
   },
   security: {
     features: []
+  },
+  cta: {
+    title: "Ready to optimize your legal work?",
+    description: "Join leading legal firms in Uzbekistan using Legal Nexus AI",
+    primary: "Try for free",
+    secondary: "Request demo"
   }
 };
 
@@ -108,9 +114,14 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     window.dispatchEvent(new CustomEvent("lang_toggle", { detail: { language: lang } }));
   };
 
-  // Enhanced translation function with type safety and fallbacks
+  // Enhanced translation function with better type safety and fallbacks
   const t = (key: string) => {
     try {
+      if (!key) {
+        console.warn("Empty translation key requested");
+        return "";
+      }
+      
       const keys = key.split(".");
       let value = translations[language];
       let currentPath = "";
@@ -118,6 +129,59 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       for (let i = 0; i < keys.length; i++) {
         const k = keys[i];
         currentPath += (currentPath ? "." : "") + k;
+        
+        if (value === undefined || value === null) {
+          console.warn(`Translation path broken at ${currentPath} for language: ${language}`);
+          
+          // Try fallbacks from other languages
+          for (const fallbackLang of ["en", "ru", "uz"].filter(l => l !== language)) {
+            let fallbackValue = translations[fallbackLang as Language];
+            let fallbackValid = true;
+            
+            // Try to follow the same path in the fallback language
+            for (let j = 0; j <= i; j++) {
+              if (fallbackValue && fallbackValue[keys[j]] !== undefined) {
+                fallbackValue = fallbackValue[keys[j]];
+              } else {
+                fallbackValid = false;
+                break;
+              }
+            }
+            
+            if (fallbackValid) {
+              console.info(`Using fallback from ${fallbackLang} for ${currentPath}`);
+              value = fallbackValue;
+              break;
+            }
+          }
+          
+          // If still undefined, check default fallbacks
+          if (value === undefined || value === null) {
+            // Check if we have a default fallback for this path
+            const topLevelKey = keys[0];
+            if (defaultFallbacks[topLevelKey]) {
+              let fallbackValue = defaultFallbacks[topLevelKey];
+              let fallbackPath = keys.slice(1);
+              
+              // Try to navigate the fallback object
+              for (const pathPart of fallbackPath) {
+                if (fallbackValue && fallbackValue[pathPart] !== undefined) {
+                  fallbackValue = fallbackValue[pathPart];
+                } else {
+                  fallbackValue = undefined;
+                  break;
+                }
+              }
+              
+              if (fallbackValue !== undefined) {
+                console.info(`Using default fallback for ${currentPath}`);
+                return fallbackValue;
+              }
+            }
+            
+            return key; // Last resort: return the key itself
+          }
+        }
         
         if (value[k] === undefined) {
           console.warn(`Missing translation key: ${currentPath} for language: ${language}`);
