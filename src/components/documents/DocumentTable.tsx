@@ -1,8 +1,9 @@
+
 import { useState } from "react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Edit, Check, Clock, Warning } from "lucide-react";
+import { FileText, Download, Edit, Check, Clock, AlertTriangle } from "lucide-react";
 import { 
   Tooltip,
   TooltipContent,
@@ -42,7 +43,7 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
       default:
         return {
           color: 'bg-gray-500',
-          icon: Warning,
+          icon: AlertTriangle,
           tooltip: 'Status unknown'
         };
     }
@@ -51,7 +52,7 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
   const getRiskBadge = (risk: string | null) => {
     if (!risk) return null;
     
-    const configs = {
+    const configs: Record<string, { variant: "default" | "destructive" | "outline" | "secondary", tooltip: string }> = {
       high: {
         variant: 'destructive',
         tooltip: 'High risk - immediate attention required'
@@ -66,8 +67,8 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
       }
     };
     
-    const config = configs[risk as keyof typeof configs] || {
-      variant: 'outline',
+    const config = configs[risk] || {
+      variant: 'outline' as const,
       tooltip: 'Risk level undefined'
     };
 
