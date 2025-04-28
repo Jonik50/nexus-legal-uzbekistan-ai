@@ -1,90 +1,75 @@
 
-import { defaultFallbacks } from "@/types/language";
-import { formatRussianText } from "@/utils/typography";
+import { Language, defaultFallbacks } from "@/types/language";
 
-export const useTranslation = (translations: Record<string, any>, language: string) => {
-  const t = (key: string) => {
+export const useTranslation = (
+  translations: Record<Language, Record<string, any>>,
+  language: Language
+) => {
+  const t = (key: string): any => {
     try {
-      if (!key) {
-        console.warn("Empty translation key requested");
-        return "";
-      }
+      // Get current language translations
+      const translationObj = translations[language];
       
-      const keys = key.split(".");
-      let value = translations[language];
-      let currentPath = "";
+      // Handle nested keys with dot notation
+      const keys = key.split('.');
+      let result = translationObj;
       
-      for (let i = 0; i < keys.length; i++) {
-        const k = keys[i];
-        currentPath += (currentPath ? "." : "") + k;
-        
-        if (value === undefined || value === null) {
-          console.warn(`Translation path broken at ${currentPath} for language: ${language}`);
+      // Navigate through nested structure
+      for (const k of keys) {
+        if (result && typeof result === 'object' && k in result) {
+          result = result[k];
+        } else {
+          // Key not found in current language, try fallbacks
           
-          // Try fallbacks from other languages
-          for (const fallbackLang of ["en", "ru", "uz"].filter(l => l !== language)) {
-            let fallbackValue = translations[fallbackLang as string];
-            let fallbackValid = true;
-            
-            // Try to follow the same path in the fallback language
-            for (let j = 0; j <= i; j++) {
-              if (fallbackValue && fallbackValue[keys[j]] !== undefined) {
-                fallbackValue = fallbackValue[keys[j]];
-              } else {
-                fallbackValid = false;
-                break;
-              }
-            }
-            
-            if (fallbackValid) {
-              console.info(`Using fallback from ${fallbackLang} for ${currentPath}`);
-              value = fallbackValue;
-              break;
-            }
-          }
-          
-          // If still undefined, check default fallbacks
-          if (value === undefined || value === null) {
+          // Check if this is a known structure with defaults
+          if (keys.length > 1) {
             const topLevelKey = keys[0];
-            if (defaultFallbacks[topLevelKey]) {
-              let fallbackValue = defaultFallbacks[topLevelKey];
-              let fallbackPath = keys.slice(1);
+            if (topLevelKey in defaultFallbacks) {
+              // Return the appropriate default structure
+              let fallbackValue = defaultFallbacks[topLevelKey as keyof typeof defaultFallbacks];
               
-              for (const pathPart of fallbackPath) {
-                if (fallbackValue && fallbackValue[pathPart] !== undefined) {
-                  fallbackValue = fallbackValue[pathPart];
+              // Try to navigate to the specific nested key in fallbacks
+              for (let i = 1; i < keys.length; i++) {
+                if (fallbackValue && typeof fallbackValue === 'object' && keys[i] in fallbackValue) {
+                  fallbackValue = fallbackValue[keys[i] as keyof typeof fallbackValue];
                 } else {
-                  fallbackValue = undefined;
+                  // If we can't find the exact nested key, return the whole fallback object
                   break;
                 }
               }
               
-              if (fallbackValue !== undefined) {
-                console.info(`Using default fallback for ${currentPath}`);
-                return fallbackValue;
+              return fallbackValue;
+            }
+          }
+          
+          // If not found in fallbacks, try English as fallback
+          if (language !== 'en' && translations['en']) {
+            let enResult = translations['en'];
+            let fallbackFound = true;
+            
+            for (const k of keys) {
+              if (enResult && typeof enResult === 'object' && k in enResult) {
+                enResult = enResult[k];
+              } else {
+                fallbackFound = false;
+                break;
               }
             }
             
-            return key;
+            if (fallbackFound) {
+              return enResult;
+            }
           }
-        }
-        
-        if (value[k] === undefined) {
-          console.warn(`Missing translation key: ${currentPath} for language: ${language}`);
+          
+          // Return key as last resort
+          console.warn(`Translation key not found: ${key}`);
           return key;
         }
-        
-        value = value[k];
       }
       
-      // Apply Russian typography improvements for text strings only
-      if (language === "ru" && typeof value === "string") {
-        return formatRussianText(value);
-      }
-      
-      return value;
+      return result;
     } catch (error) {
-      console.error(`Error retrieving translation for key: ${key}`, error);
+      console.error(`Error accessing translation for key: ${key}`, error);
       return key;
     }
   };

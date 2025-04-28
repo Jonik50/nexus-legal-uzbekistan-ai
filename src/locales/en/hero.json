@@ -1,11 +1,9 @@
 
 {
-  "hero": {
-    "title": "AI-Powered Legal Assistant for Uzbekistan",
-    "subtitle": "Streamline your legal work with the first AI assistant fully adapted to Uzbekistan's legislation",
-    "cta": {
-      "primary": "Try for Free",
-      "secondary": "Request Demo"
-    }
+  "title": "AI-Powered Legal Assistant for Uzbekistan",
+  "subtitle": "Streamline your legal work with the first AI assistant fully adapted to Uzbekistan's legislation",
+  "cta": {
+    "primary": "Try for Free",
+    "secondary": "Request Demo"
   }
 }
