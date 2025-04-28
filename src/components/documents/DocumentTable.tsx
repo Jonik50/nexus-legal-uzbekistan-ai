@@ -19,6 +19,7 @@ interface DocumentTableProps {
 export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewContent, setPreviewContent] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
@@ -27,13 +28,29 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
       setSelectedDoc(document);
       setIsPreviewOpen(true);
       
+      // Get the file URL for preview
       const { data: { signedUrl }, error } = await supabase
         .storage
-        .from('documents')
+        .from('legal_documents')
         .createSignedUrl(document.file_path, 3600);
 
       if (error) throw error;
       setPreviewUrl(signedUrl);
+
+      // For text files, fetch the content for preview
+      if (document.type === 'text/plain' || 
+          document.type === 'application/txt' ||
+          document.file_path.endsWith('.txt')) {
+        const { data, error: downloadError } = await supabase
+          .storage
+          .from('legal_documents')
+          .download(document.file_path);
+        
+        if (downloadError) throw downloadError;
+        
+        const text = await data.text();
+        setPreviewContent(text);
+      }
     } catch (error: any) {
       toast.error("Error loading document preview");
       console.error("Preview error:", error);
@@ -44,13 +61,18 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
     if (!selectedDoc) return;
 
     try {
+      // Delete the file from storage
       const { error: storageError } = await supabase
         .storage
-        .from('documents')
+        .from('legal_documents')
         .remove([selectedDoc.file_path]);
 
-      if (storageError) throw storageError;
+      if (storageError) {
+        console.error("Storage deletion error:", storageError);
+        // Continue with database deletion even if storage deletion fails
+      }
 
+      // Delete the document record from database
       const { error: dbError } = await supabase
         .from('documents')
         .delete()
@@ -62,7 +84,7 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
       setIsDeleteOpen(false);
       setSelectedDoc(null);
     } catch (error: any) {
-      toast.error("Error deleting document");
+      toast.error("Error deleting document: " + error.message);
       console.error("Delete error:", error);
     }
   };
@@ -137,9 +159,12 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
               setIsPreviewOpen(false);
               setSelectedDoc(null);
               setPreviewUrl(null);
+              setPreviewContent(null);
             }}
             documentUrl={previewUrl ?? undefined}
+            documentContent={previewContent}
             documentName={selectedDoc.name as string}
+            documentType={typeof selectedDoc.type === 'string' ? selectedDoc.type : 'unknown'}
           />
 
           <DeleteConfirmation

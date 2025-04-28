@@ -49,13 +49,17 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Received analyze-document request')
+    
     const { documentId, documentText } = await req.json()
 
     if (!documentId || !documentText) {
-      throw new Error('Missing required parameters')
+      console.error('Missing required parameters')
+      throw new Error('Missing required parameters: documentId or documentText')
     }
 
     console.log('Starting analysis for document:', documentId)
+    console.log('Document text length:', documentText.length)
 
     // Create Supabase client
     const supabaseAdmin = createClient(
@@ -80,24 +84,45 @@ serve(async (req) => {
       throw updateError
     }
 
+    console.log('Document status updated to analyzing')
+    
+    // Verify OpenRouter API key exists
+    if (!OPENROUTER_API_KEY) {
+      console.error('OPENROUTER_API_KEY is not set')
+      throw new Error('OPENROUTER_API_KEY is not set')
+    }
+
+    console.log('Calling OpenRouter API with model:', OPENROUTER_MODEL)
+    
     // Call OpenRouter API using the OpenAI SDK
     const completion = await openai.chat.completions.create({
       model: OPENROUTER_MODEL,
       messages: [
         { role: 'system', content: DEFAULT_SYSTEM_PROMPT },
-        { role: 'user', content: documentText }
+        { role: 'user', content: documentText.substring(0, 8000) } // Limit text length to avoid token issues
       ],
       temperature: 0.3,
       max_tokens: 1500
     })
 
     if (!completion.choices[0]?.message?.content) {
+      console.error('No analysis results received from OpenRouter')
       throw new Error('No analysis results received')
     }
 
-    const analysisResult = JSON.parse(completion.choices[0].message.content)
-    console.log('Analysis completed successfully')
+    console.log('Analysis received from OpenRouter')
+    
+    let analysisResult
+    try {
+      analysisResult = JSON.parse(completion.choices[0].message.content)
+    } catch (parseError) {
+      console.error('Failed to parse OpenRouter response:', parseError)
+      console.log('Raw response:', completion.choices[0].message.content)
+      throw new Error('Failed to parse analysis results')
+    }
 
+    console.log('Analysis parsed successfully')
+    
     // Create new analysis record
     const { data: analysis, error: analysisError } = await supabaseAdmin
       .from('document_analysis')
@@ -113,6 +138,8 @@ serve(async (req) => {
       throw analysisError
     }
 
+    console.log('Analysis record created with ID:', analysis.id)
+    
     // Insert key findings
     if (analysisResult.key_findings?.length > 0) {
       const { error: findingsError } = await supabaseAdmin
@@ -130,6 +157,8 @@ serve(async (req) => {
         console.error('Error inserting key findings:', findingsError)
         throw findingsError
       }
+      
+      console.log('Inserted key findings:', analysisResult.key_findings.length)
     }
 
     // Insert clauses
@@ -149,6 +178,8 @@ serve(async (req) => {
         console.error('Error inserting clauses:', clausesError)
         throw clausesError
       }
+      
+      console.log('Inserted clauses:', analysisResult.clauses.length)
     }
 
     // Calculate overall risk level based on findings and clauses
@@ -159,6 +190,8 @@ serve(async (req) => {
     
     const overallRisk = allRiskLevels.includes('high') ? 'high' :
                        allRiskLevels.includes('medium') ? 'medium' : 'low'
+                       
+    console.log('Calculated overall risk level:', overallRisk)
 
     // Update document status and risk level
     const { error: finalUpdateError } = await supabaseAdmin
@@ -174,6 +207,8 @@ serve(async (req) => {
       throw finalUpdateError
     }
 
+    console.log('Document analysis completed successfully')
+    
     return new Response(
       JSON.stringify({ 
         success: true, 
@@ -188,28 +223,34 @@ serve(async (req) => {
     
     // Try to update document status to error if possible
     try {
-      const supabaseAdmin = createClient(
-        Deno.env.get('SUPABASE_URL') ?? '',
-        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-        {
-          auth: {
-            autoRefreshToken: false,
-            persistSession: false,
-          },
-        }
-      )
+      const { documentId } = await req.json().catch(() => ({ documentId: null }))
+      
+      if (documentId) {
+        const supabaseAdmin = createClient(
+          Deno.env.get('SUPABASE_URL') ?? '',
+          Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+          {
+            auth: {
+              autoRefreshToken: false,
+              persistSession: false,
+            },
+          }
+        )
 
-      await supabaseAdmin
-        .from('documents')
-        .update({ status: 'error' })
-        .eq('id', documentId)
+        await supabaseAdmin
+          .from('documents')
+          .update({ status: 'error' })
+          .eq('id', documentId)
+          
+        console.log('Updated document status to error')
+      }
     } catch (updateError) {
       console.error('Error updating document status to error:', updateError)
     }
 
     return new Response(
       JSON.stringify({ 
-        error: error.message,
+        error: error instanceof Error ? error.message : 'Unknown error',
         details: 'Document analysis failed. Please try again or contact support.'
       }),
       { 

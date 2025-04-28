@@ -55,12 +55,16 @@ export const DocumentUpload = () => {
 
       if (dbError) throw dbError;
 
-      // Read the file content
+      toast.success('Document uploaded successfully');
+
+      // Read the file content for analysis
       const reader = new FileReader();
       reader.onload = async (e) => {
         const text = e.target?.result;
         if (typeof text === 'string') {
           try {
+            console.log('Calling analyze-document function for document ID:', document.id);
+            
             // Call the analyze-document function
             const { error } = await supabase.functions.invoke('analyze-document', {
               body: {
@@ -69,11 +73,16 @@ export const DocumentUpload = () => {
               }
             });
 
-            if (error) throw error;
-            toast.success('Document uploaded and analysis started');
+            if (error) {
+              console.error('Analysis error:', error);
+              toast.error('Error analyzing document: ' + error.message);
+            } else {
+              console.log('Document analysis started successfully');
+              toast.success('Document analysis started');
+            }
           } catch (error: any) {
             console.error('Analysis error:', error);
-            toast.error('Error analyzing document');
+            toast.error('Error analyzing document: ' + (error.message || 'Unknown error'));
           }
         }
       };
@@ -81,6 +90,7 @@ export const DocumentUpload = () => {
 
     } catch (error: any) {
       toast.error(error.message || 'Error uploading document');
+      console.error('Upload error:', error);
     } finally {
       setIsUploading(false);
     }
