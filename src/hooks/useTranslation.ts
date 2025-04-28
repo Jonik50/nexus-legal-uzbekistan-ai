@@ -25,38 +25,12 @@ export const useTranslation = (
           if (keys.length > 1) {
             const topLevelKey = keys[0];
             if (topLevelKey in defaultFallbacks) {
-              // Return the appropriate default structure
-              let fallbackValue = defaultFallbacks[topLevelKey as keyof typeof defaultFallbacks];
-              
-              // Try to navigate to the specific nested key in fallbacks
-              for (let i = 1; i < keys.length; i++) {
-                if (fallbackValue && typeof fallbackValue === 'object' && keys[i] in fallbackValue) {
-                  fallbackValue = fallbackValue[keys[i] as keyof typeof fallbackValue];
-                } else {
-                  // If we can't find the exact nested key, return appropriate default
-                  break;
-                }
-              }
-              
-              // Convert objects to appropriate return types
-              if (Array.isArray(fallbackValue)) {
-                return fallbackValue;
-              } else if (typeof fallbackValue === 'object' && fallbackValue !== null) {
-                // Object fallbacks should return empty arrays or strings based on context
-                if (key.includes('.items') || key.includes('.points') || key.includes('.rows') || 
-                    key.includes('.headers') || key.includes('.features') || key.includes('.clients')) {
-                  return [];
-                } else {
-                  return '';
-                }
-              } else {
-                // Return primitives directly
-                return fallbackValue ?? '';
-              }
+              // Return null for missing values
+              return null;
             }
           }
           
-          // If not found in fallbacks, try English as fallback
+          // Try English as fallback
           if (language !== 'en' && translations['en']) {
             let enResult = translations['en'];
             let fallbackFound = true;
@@ -71,67 +45,48 @@ export const useTranslation = (
             }
             
             if (fallbackFound) {
-              // Convert the fallback result to appropriate return type
-              if (Array.isArray(enResult)) {
-                return enResult;
-              } else if (typeof enResult === 'object' && enResult !== null) {
-                // Convert objects to appropriate return types based on key naming
-                if (key.includes('.items') || key.includes('.points') || key.includes('.rows') || 
-                    key.includes('.headers') || key.includes('.features') || key.includes('.clients')) {
-                  return [];
-                } else {
-                  return '';
-                }
-              } else {
-                return enResult ?? '';
-              }
+              return sanitizeTranslationValue(enResult);
             }
           }
           
-          // Return appropriate defaults based on context and key naming
-          if (key.includes('.items') || key.includes('.points') || key.includes('.rows') || 
-              key.includes('.headers') || key.includes('.features') || key.includes('.clients')) {
-            return [];
-          } else {
-            return '';
-          }
+          // If not found anywhere, return null
+          return null;
         }
       }
       
-      // Final safety check - ensure we don't return raw objects
-      if (result === null || result === undefined) {
-        return '';
-      }
+      return sanitizeTranslationValue(result);
       
-      // Handle arrays and objects safely
-      if (Array.isArray(result)) {
-        return result;
-      } else if (typeof result === 'object') {
-        console.warn(`Translation key returns an object instead of a primitive: ${key}`);
-        
-        // Return empty array for array-like keys
-        if (key.includes('.items') || key.includes('.rows') || key.includes('.headers') || 
-            key.includes('.points') || key.includes('.features') || key.includes('.clients')) {
-          return [];
-        } else {
-          // For other keys that should be strings
-          return '';
-        }
-      }
-      
-      // Return primitives directly
-      return result;
     } catch (error) {
       console.error(`Error accessing translation for key: ${key}`, error);
-      // Return appropriate defaults based on context
-      if (key.includes('.items') || key.includes('.rows') || key.includes('.headers') || 
-          key.includes('.points') || key.includes('.features') || key.includes('.clients')) {
-        return [];
-      } else {
-        return '';
-      }
+      return null;
     }
+  };
+
+  // Helper function to ensure we only return allowed types
+  const sanitizeTranslationValue = (value: any): string | string[] | number | boolean | null => {
+    if (value === null || value === undefined) {
+      return null;
+    }
+
+    // Handle primitives
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      return value;
+    }
+
+    // Handle arrays
+    if (Array.isArray(value)) {
+      return value;
+    }
+
+    // Handle objects by converting them to empty string
+    if (typeof value === 'object') {
+      return '';
+    }
+
+    // Default fallback
+    return null;
   };
 
   return { t };
 };
+
