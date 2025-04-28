@@ -36,15 +36,18 @@ export const TestimonialsSection = () => {
   }, []);
 
   // Ensure testimonials and clients are always arrays
-  const testimonials = Array.isArray(t("testimonials.items")) ? t("testimonials.items") : [];
-  const clients = Array.isArray(t("testimonials.clients")) ? t("testimonials.clients") : [];
+  const testimonialItems = Array.isArray(t("testimonials.items")) ? t("testimonials.items") : [];
+  const clientItems = Array.isArray(t("testimonials.clients")) ? t("testimonials.clients") : [];
 
   useEffect(() => {
+    if (testimonialItems.length === 0) return;
+    
     const interval = setInterval(() => {
-      setActiveIndex((current) => (current + 1) % testimonials.length);
+      setActiveIndex((current) => (current + 1) % testimonialItems.length);
     }, 5000);
+    
     return () => clearInterval(interval);
-  }, [testimonials.length]);
+  }, [testimonialItems.length]);
 
   // Get the title safely
   const testimonialsTitle = t("testimonials.title") || "What Our Clients Say";
@@ -63,7 +66,7 @@ export const TestimonialsSection = () => {
         <div className="animate-stagger mt-16">
           {/* Testimonial slider */}
           <div className="relative h-[300px] md:h-[240px]">
-            {testimonials.map((testimonial: any, index: number) => (
+            {testimonialItems.map((testimonial: any, index: number) => (
               <div
                 key={index}
                 className={`absolute inset-0 transition-opacity duration-500 ${
@@ -82,14 +85,14 @@ export const TestimonialsSection = () => {
                       />
                     ))}
                   </div>
-                  <p className="text-lg italic mb-6 relative z-10">"{testimonial.quote || `Testimonial ${index + 1}`}"</p>
+                  <p className="text-lg italic mb-6 relative z-10">"{testimonial?.quote || `Testimonial ${index + 1}`}"</p>
                   <div className="flex items-center">
                     <div className="bg-primary/10 rounded-full w-12 h-12 flex items-center justify-center text-primary font-bold">
-                      {testimonial.author ? testimonial.author.charAt(0) : "U"}
+                      {testimonial?.author ? testimonial.author.charAt(0) : "U"}
                     </div>
                     <div className="ml-4">
-                      <p className="font-bold">{testimonial.author || "Unknown Author"}</p>
-                      <p className="text-neutral-gray text-sm">{testimonial.position || "Position"}</p>
+                      <p className="font-bold">{testimonial?.author || "Unknown Author"}</p>
+                      <p className="text-neutral-gray text-sm">{testimonial?.position || "Position"}</p>
                     </div>
                   </div>
                 </div>
@@ -99,7 +102,7 @@ export const TestimonialsSection = () => {
 
           {/* Testimonial navigation dots */}
           <div className="flex justify-center mt-8">
-            {testimonials.map((_, index) => (
+            {testimonialItems.map((_, index) => (
               <button
                 key={index}
                 className={`mx-1 rounded-full transition-all ${
@@ -120,7 +123,7 @@ export const TestimonialsSection = () => {
             Trusted by leading organizations
           </p>
           <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16">
-            {clients.map((client: string, index: number) => (
+            {clientItems.map((client: string, index: number) => (
               <div
                 key={index}
                 className="bg-white px-6 py-4 rounded-lg shadow-md border border-neutral-100 hover:shadow-lg transition-shadow duration-300"

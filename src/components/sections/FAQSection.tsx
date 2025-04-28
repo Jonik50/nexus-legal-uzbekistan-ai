@@ -41,7 +41,7 @@ export const FAQSection = () => {
 
   // Ensure faqs is always an array
   const faqTitle = t("faq.title") || "Frequently Asked Questions";
-  const faqs = Array.isArray(t("faq.items")) ? t("faq.items") : [];
+  const faqItems = Array.isArray(t("faq.items")) ? t("faq.items") : [];
 
   return (
     <section id="faq" className="py-20 md:py-28 bg-gradient-to-b from-neutral-softGray to-white relative" ref={sectionRef}>
@@ -55,13 +55,13 @@ export const FAQSection = () => {
 
         <div className="animate-stagger mt-16">
           <Accordion type="single" collapsible className="w-full bg-white rounded-xl shadow-md border border-neutral-100 overflow-hidden">
-            {faqs.map((item: any, index: number) => (
+            {faqItems.map((item: any, index: number) => (
               <AccordionItem key={index} value={`item-${index}`} className={`px-4 ${index > 0 ? 'border-t border-neutral-100' : ''}`}>
                 <AccordionTrigger className="text-left py-5 font-medium">
-                  {item.question || `Question ${index + 1}`}
+                  {item?.question || `Question ${index + 1}`}
                 </AccordionTrigger>
                 <AccordionContent className="text-neutral-gray pb-5">
-                  {item.answer || "No answer provided"}
+                  {item?.answer || "No answer provided"}
                 </AccordionContent>
               </AccordionItem>
             ))}

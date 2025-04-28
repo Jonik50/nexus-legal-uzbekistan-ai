@@ -66,8 +66,8 @@ export const ProblemSolutionSection = () => {
                   <div className="bg-primary/10 p-4 rounded-full mb-6">
                     <Icon size={32} className="text-primary" />
                   </div>
-                  <h3 className="text-xl font-bold mb-4">{point.title || `Point ${index + 1}`}</h3>
-                  <p className="text-neutral-gray">{point.description || "No description provided"}</p>
+                  <h3 className="text-xl font-bold mb-4">{point?.title || `Point ${index + 1}`}</h3>
+                  <p className="text-neutral-gray">{point?.description || "No description provided"}</p>
                 </div>
               );
             })}
