@@ -24,16 +24,22 @@ export const HeroSection = () => {
     navigate("/auth", { state: { activeTab: "signup", isDemoRequest: true } });
   };
 
+  // Safely extract the text from translation objects
+  const heroTitle = t("title") || "AI-Powered Legal Assistant for Uzbekistan";
+  const heroSubtitle = t("subtitle") || "Streamline your legal work with the first AI assistant fully adapted to Uzbekistan's legislation";
+  const ctaPrimary = t("cta.primary") || "Try for Free";
+  const ctaSecondary = t("cta.secondary") || "Request Demo";
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-white to-neutral-50 pt-32 pb-16 md:pt-40 md:pb-24">
       <div className="container-custom relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {t("title") || "AI-Powered Legal Assistant for Uzbekistan"}
+              {heroTitle}
             </h1>
             <p className="text-xl text-neutral-gray mb-8 max-w-xl mx-auto lg:mx-0">
-              {t("subtitle") || "Streamline your legal work with the first AI assistant fully adapted to Uzbekistan's legislation"}
+              {heroSubtitle}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button 
@@ -41,7 +47,7 @@ export const HeroSection = () => {
                 className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" 
                 onClick={handleTryFreeClick}
               >
-                {(t("cta.primary") as string) || "Try for Free"}
+                {ctaPrimary}
               </Button>
               <Button 
                 variant="outline" 
@@ -49,7 +55,7 @@ export const HeroSection = () => {
                 className="border-2 border-primary text-primary hover:bg-primary/5 text-lg px-8 py-6 rounded-xl transition-colors"
                 onClick={handleRequestDemoClick}
               >
-                {(t("cta.secondary") as string) || "Request Demo"}
+                {ctaSecondary}
               </Button>
             </div>
           </div>

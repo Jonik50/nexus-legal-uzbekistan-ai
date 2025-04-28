@@ -47,6 +47,11 @@ export const AdvantagesSection = () => {
     window.dispatchEvent(new CustomEvent("download_pdf", { detail: { document: "comparison_report" } }));
   };
 
+  // Get the title and subtitle safely
+  const advantagesTitle = t("advantages.title") || "Compare Legal Nexus AI with Traditional Solutions";
+  const advantagesSubtitle = t("advantages.subtitle") || "See how our AI-powered solution compares to traditional legal research and document analysis methods";
+  const ctaText = t("advantages.cta") || "Download Full Comparison Report";
+  
   // Ensure the headers and rows are arrays
   const headers = Array.isArray(t("advantages.table.headers")) ? t("advantages.table.headers") : [];
   const rows = Array.isArray(t("advantages.table.rows")) ? t("advantages.table.rows") : [];
@@ -58,10 +63,10 @@ export const AdvantagesSection = () => {
       
       <div className="container-custom relative z-10">
         <h2 className="animate-stagger section-title text-center">
-          {t("advantages.title") || "Compare Legal Nexus AI with Traditional Solutions"}
+          {advantagesTitle}
         </h2>
         <p className="animate-stagger section-subtitle text-center">
-          {t("advantages.subtitle") || "See how our AI-powered solution compares to traditional legal research and document analysis methods"}
+          {advantagesSubtitle}
         </p>
 
         <div className="animate-stagger mt-16 overflow-x-auto">
@@ -111,7 +116,7 @@ export const AdvantagesSection = () => {
             onClick={trackDownloadClick}
           >
             <Download className="w-4 h-4" />
-            {t("advantages.cta") || "Download Full Comparison Report"}
+            {ctaText}
           </Button>
         </div>
       </div>

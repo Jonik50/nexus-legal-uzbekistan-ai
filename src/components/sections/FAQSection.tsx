@@ -39,7 +39,8 @@ export const FAQSection = () => {
     };
   }, []);
 
-  // Ensure FAQs is always an array
+  // Ensure faqs is always an array by checking if it exists and is an array
+  const faqTitle = t("faq.title") || "Frequently Asked Questions";
   const faqs = Array.isArray(t("faq.items")) ? t("faq.items") : [];
 
   return (
@@ -49,7 +50,7 @@ export const FAQSection = () => {
       
       <div className="container-custom max-w-4xl relative z-10">
         <h2 className="animate-stagger section-title text-center">
-          {t("faq.title") || "Frequently Asked Questions"}
+          {faqTitle}
         </h2>
 
         <div className="animate-stagger mt-16">

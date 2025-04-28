@@ -18,6 +18,12 @@ export const CTASection = () => {
     navigate("/auth", { state: { activeTab: "signup", isDemoRequest: true } });
   };
 
+  // Safely extract text from translation objects
+  const ctaTitle = t("cta.title") || "Ready to optimize your legal work?";
+  const ctaDescription = t("cta.description") || "Join leading legal firms in Uzbekistan using Legal Nexus AI";
+  const ctaPrimary = t("cta.primary") || "Try for free";
+  const ctaSecondary = t("cta.secondary") || "Request demo";
+
   return (
     <section className="py-20 md:py-28 bg-primary relative overflow-hidden">
       {/* Background elements */}
@@ -26,10 +32,10 @@ export const CTASection = () => {
       
       <div className="container-custom relative z-10 text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
-          {t("cta.title") || "Ready to optimize your legal work?"}
+          {ctaTitle}
         </h2>
         <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
-          {t("cta.description") || "Join leading legal firms in Uzbekistan using Legal Nexus AI"}
+          {ctaDescription}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button 
@@ -38,7 +44,7 @@ export const CTASection = () => {
             className="bg-white text-primary hover:bg-white/90 text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
             onClick={handleTryFreeClick}
           >
-            {t("cta.primary") || "Try for free"}
+            {ctaPrimary}
           </Button>
           <Button 
             variant="outline" 
@@ -46,7 +52,7 @@ export const CTASection = () => {
             className="border-2 border-white text-white hover:bg-white/10 text-lg px-8 py-6 rounded-xl transition-colors"
             onClick={handleRequestDemoClick}
           >
-            {t("cta.secondary") || "Request demo"}
+            {ctaSecondary}
           </Button>
         </div>
       </div>

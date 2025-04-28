@@ -75,6 +75,21 @@ export const useTranslation = (
         }
       }
       
+      // Extra safety check - if the result is still an object, 
+      // and it's being used in a context where a string is expected,
+      // convert it to a string representation or return a fallback
+      if (result && typeof result === 'object') {
+        console.warn(`Translation key returns an object instead of a primitive: ${key}`);
+        
+        if (key.includes('.items') || key.includes('.rows') || key.includes('.headers')) {
+          return Array.isArray(result) ? result : [];
+        } else {
+          // If we have JSON.stringify the object, it will produce "[object Object]" when rendered
+          // Instead we return the key as a fallback
+          return key;
+        }
+      }
+      
       return result;
     } catch (error) {
       console.error(`Error accessing translation for key: ${key}`, error);
