@@ -1,7 +1,6 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import en from "../locales/en.json";
-import ru from "../locales/ru.json";
+import ru from "../locales/ru/index";
 import uz from "../locales/uz.json";
 import { formatRussianText } from "@/utils/typography";
 
