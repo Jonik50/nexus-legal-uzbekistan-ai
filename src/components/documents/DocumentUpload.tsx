@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Upload } from "lucide-react";
 
 export const DocumentUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -122,9 +123,11 @@ export const DocumentUpload = () => {
 
   return (
     <div
-      className={`border-2 border-dashed rounded-lg p-6 text-center ${
-        isDragging ? 'border-primary bg-primary/10' : 'border-gray-300'
-      }`}
+      className={`relative overflow-hidden transition-all duration-300 ${
+        isDragging
+          ? 'border-2 border-dashed border-primary bg-primary/5'
+          : 'border-2 border-dashed border-gray-200 bg-gradient-to-b from-white to-gray-50'
+      } rounded-lg p-8 text-center shadow-sm hover:shadow-md`}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
@@ -135,18 +138,42 @@ export const DocumentUpload = () => {
         id="file-upload"
         className="hidden"
         onChange={handleFileUpload}
-        accept=".pdf,.doc,.docx"
+        accept=".pdf,.doc,.docx,.txt"
       />
-      <div className="space-y-4">
-        <p className="text-sm text-gray-500">
-          {isDragging ? 'Drop your file here' : 'Drag and drop your file here, or'}
-        </p>
-        <Button
-          onClick={() => document.getElementById('file-upload')?.click()}
-          disabled={isUploading || !user}
-        >
-          {isUploading ? 'Uploading...' : 'Choose File'}
-        </Button>
+      
+      <div className="space-y-6">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+          <Upload className="h-6 w-6 text-primary" />
+        </div>
+        
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-neutral-darkPurple">
+            {isDragging ? 'Drop your file here' : 'Upload your document'}
+          </p>
+          <p className="text-xs text-neutral-gray">
+            PDF, DOC, DOCX or TXT (max 10MB)
+          </p>
+        </div>
+
+        <div className="flex justify-center gap-3">
+          <Button
+            onClick={() => document.getElementById('file-upload')?.click()}
+            disabled={isUploading || !user}
+            className="relative overflow-hidden"
+          >
+            {isUploading ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                <span>Uploading...</span>
+              </div>
+            ) : (
+              <>
+                <Upload className="mr-2 h-4 w-4" />
+                Choose File
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

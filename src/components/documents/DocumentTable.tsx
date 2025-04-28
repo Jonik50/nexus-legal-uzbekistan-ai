@@ -1,9 +1,14 @@
-
 import { useState } from "react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Edit } from "lucide-react";
+import { FileText, Download, Edit, Check, Clock, Warning } from "lucide-react";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Document {
   id: string;
@@ -20,47 +25,86 @@ interface DocumentTableProps {
 }
 
 export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
-  const getStatusColor = (status: string) => {
+  const getStatusConfig = (status: string) => {
     switch (status) {
       case 'analyzed':
-        return 'bg-green-500';
+        return {
+          color: 'bg-green-500',
+          icon: Check,
+          tooltip: 'Analysis complete'
+        };
       case 'pending':
-        return 'bg-yellow-500';
+        return {
+          color: 'bg-yellow-500',
+          icon: Clock,
+          tooltip: 'Analysis in progress'
+        };
       default:
-        return 'bg-gray-500';
+        return {
+          color: 'bg-gray-500',
+          icon: Warning,
+          tooltip: 'Status unknown'
+        };
     }
   };
 
   const getRiskBadge = (risk: string | null) => {
     if (!risk) return null;
     
-    switch (risk) {
-      case 'high':
-        return <Badge variant="destructive">{risk}</Badge>;
-      case 'medium':
-        return <Badge variant="secondary">{risk}</Badge>;
-      case 'low':
-        return <Badge variant="outline">{risk}</Badge>;
-      default:
-        return <Badge>{risk}</Badge>;
-    }
+    const configs = {
+      high: {
+        variant: 'destructive',
+        tooltip: 'High risk - immediate attention required'
+      },
+      medium: {
+        variant: 'secondary',
+        tooltip: 'Medium risk - review recommended'
+      },
+      low: {
+        variant: 'outline',
+        tooltip: 'Low risk - standard review'
+      }
+    };
+    
+    const config = configs[risk as keyof typeof configs] || {
+      variant: 'outline',
+      tooltip: 'Risk level undefined'
+    };
+
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Badge variant={config.variant}>{risk}</Badge>
+          </TooltipTrigger>
+          <TooltipContent>{config.tooltip}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading documents...</div>;
+    return (
+      <div className="flex h-32 items-center justify-center rounded-lg border border-dashed">
+        <div className="flex items-center gap-2 text-neutral-gray">
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+          Loading documents...
+        </div>
+      </div>
+    );
   }
 
   if (documents.length === 0) {
     return (
-      <div className="text-center py-12 border border-dashed border-gray-300 rounded-lg">
-        <p className="text-neutral-gray">No documents uploaded yet.</p>
-        <p className="text-sm mt-2">Upload your first document to get started</p>
+      <div className="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed text-center">
+        <p className="text-neutral-gray">No documents uploaded yet</p>
+        <p className="text-sm text-neutral-coolGray">Upload your first document to get started</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto border rounded-lg">
+    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
       <Table>
         <TableHeader>
           <TableRow>
@@ -73,50 +117,82 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {documents.map((doc) => (
-            <TableRow key={doc.id}>
-              <TableCell className="font-medium">{doc.name}</TableCell>
-              <TableCell>{doc.type}</TableCell>
-              <TableCell>
-                <Badge className={getStatusColor(doc.status)}>
-                  {doc.status}
-                </Badge>
-              </TableCell>
-              <TableCell>{getRiskBadge(doc.risk_level)}</TableCell>
-              <TableCell>{new Date(doc.created_at).toLocaleDateString()}</TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    className="h-8 w-8 p-0"
-                    disabled={doc.status !== 'analyzed'}
-                    title="View Analysis"
-                  >
-                    <FileText size={16} />
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
-                    className="h-8 w-8 p-0"
-                    title="Download"
-                  >
-                    <Download size={16} />
-                  </Button>
-                  {doc.status !== 'analyzed' && (
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="h-8 w-8 p-0"
-                      title="Analyze Manually"
-                    >
-                      <Edit size={16} />
-                    </Button>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+          {documents.map((doc) => {
+            const statusConfig = getStatusConfig(doc.status);
+            
+            return (
+              <TableRow key={doc.id} className="group">
+                <TableCell className="font-medium">{doc.name}</TableCell>
+                <TableCell>{doc.type}</TableCell>
+                <TableCell>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Badge className={`inline-flex items-center gap-1 ${statusConfig.color}`}>
+                          <statusConfig.icon className="h-3 w-3" />
+                          {doc.status}
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>{statusConfig.tooltip}</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableCell>
+                <TableCell>{getRiskBadge(doc.risk_level)}</TableCell>
+                <TableCell>{new Date(doc.created_at).toLocaleDateString()}</TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2 opacity-80 transition-opacity group-hover:opacity-100">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            size="sm" 
+                            variant="default"
+                            className="h-8 w-8 p-0"
+                            disabled={doc.status !== 'analyzed'}
+                          >
+                            <FileText size={16} />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>View Analysis</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="h-8 w-8 p-0"
+                          >
+                            <Download size={16} />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Download Document</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
+                    {doc.status !== 'analyzed' && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className="h-8 w-8 p-0"
+                            >
+                              <Edit size={16} />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>Analyze Manually</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>
