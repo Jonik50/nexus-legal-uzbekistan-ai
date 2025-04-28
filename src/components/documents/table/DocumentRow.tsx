@@ -29,7 +29,7 @@ export const DocumentRow = ({ document, onPreview, onDelete }: DocumentRowProps)
         <DocumentStatusBadge status={typeof document.status === 'string' ? document.status : 'unknown'} />
       </TableCell>
       <TableCell>
-        <DocumentRiskBadge risk={document.risk_level} />
+        <DocumentRiskBadge risk={typeof document.risk_level === 'string' ? document.risk_level : null} />
       </TableCell>
       <TableCell className="text-neutral-coolGray">
         {formatDate(document.created_at)}
