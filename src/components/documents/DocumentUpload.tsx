@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -40,7 +40,7 @@ export const DocumentUpload = () => {
       if (uploadError) throw uploadError;
 
       // Create document record in the database
-      const { error: dbError } = await supabase
+      const { data: document, error: dbError } = await supabase
         .from('documents')
         .insert({
           name: file.name,
@@ -48,11 +48,36 @@ export const DocumentUpload = () => {
           type: file.type,
           status: 'pending',
           user_id: user.id
-        });
+        })
+        .select()
+        .single();
 
       if (dbError) throw dbError;
 
-      toast.success('Document uploaded successfully');
+      // Read the file content
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const text = e.target?.result;
+        if (typeof text === 'string') {
+          try {
+            // Call the analyze-document function
+            const { error } = await supabase.functions.invoke('analyze-document', {
+              body: {
+                documentId: document.id,
+                documentText: text
+              }
+            });
+
+            if (error) throw error;
+            toast.success('Document uploaded and analysis started');
+          } catch (error: any) {
+            console.error('Analysis error:', error);
+            toast.error('Error analyzing document');
+          }
+        }
+      };
+      reader.readAsText(file);
+
     } catch (error: any) {
       toast.error(error.message || 'Error uploading document');
     } finally {
