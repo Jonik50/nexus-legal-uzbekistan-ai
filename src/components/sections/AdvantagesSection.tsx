@@ -3,6 +3,14 @@ import React, { useEffect, useRef } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { FileText, Download } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table";
 
 export const AdvantagesSection = () => {
   const { t } = useLanguage();
@@ -39,6 +47,10 @@ export const AdvantagesSection = () => {
     window.dispatchEvent(new CustomEvent("download_pdf", { detail: { document: "comparison_report" } }));
   };
 
+  // Ensure the headers and rows are properly typed
+  const headers = t("advantages.table.headers") || [];
+  const rows = t("advantages.table.rows") || [];
+
   return (
     <section className="py-20 md:py-28 bg-gradient-to-b from-neutral-50 to-white relative" ref={sectionRef}>
       {/* Background decoration */}
@@ -54,41 +66,41 @@ export const AdvantagesSection = () => {
 
         <div className="animate-stagger mt-16 overflow-x-auto">
           <div className="bg-white rounded-xl shadow-lg border border-neutral-100 p-1">
-            <table className="w-full border-collapse min-w-[600px]">
-              <thead>
-                <tr className="bg-neutral-softGray">
-                  {t("advantages.table.headers").map((header: string, index: number) => (
-                    <th
+            <Table className="w-full min-w-[600px]">
+              <TableHeader>
+                <TableRow className="bg-neutral-softGray">
+                  {Array.isArray(headers) && headers.map((header: string, index: number) => (
+                    <TableHead
                       key={index}
                       className={`py-4 px-6 text-left font-bold ${
                         index === 1 ? "text-primary" : ""
                       }`}
                     >
                       {header}
-                    </th>
+                    </TableHead>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
-                {t("advantages.table.rows").map((row: string[], index: number) => (
-                  <tr
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Array.isArray(rows) && rows.map((row: string[], index: number) => (
+                  <TableRow
                     key={index}
                     className={index % 2 === 0 ? "bg-white" : "bg-neutral-softGray/30"}
                   >
-                    {row.map((cell, cellIndex) => (
-                      <td
+                    {Array.isArray(row) && row.map((cell, cellIndex) => (
+                      <TableCell
                         key={cellIndex}
                         className={`py-4 px-6 ${
                           cellIndex === 1 ? "text-primary font-bold" : ""
                         }`}
                       >
                         {cell}
-                      </td>
+                      </TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         </div>
 
