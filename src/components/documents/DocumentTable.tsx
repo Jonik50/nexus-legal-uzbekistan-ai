@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FileText, Download, Edit, Check, Clock, AlertTriangle } from "lucide-react";
+import { FileText, Download, Edit, Check, Clock, AlertTriangle, Upload } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Tooltip,
   TooltipContent,
@@ -86,20 +87,54 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
 
   if (loading) {
     return (
-      <div className="flex h-32 items-center justify-center rounded-lg border border-dashed">
-        <div className="flex items-center gap-2 text-neutral-gray">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-          Loading documents...
-        </div>
+      <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Document Name</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Risk Level</TableHead>
+              <TableHead>Upload Date</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {[...Array(3)].map((_, index) => (
+              <TableRow key={index}>
+                <TableCell><Skeleton className="h-4 w-[250px]" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                <TableCell><Skeleton className="h-6 w-[120px]" /></TableCell>
+                <TableCell><Skeleton className="h-6 w-[80px]" /></TableCell>
+                <TableCell><Skeleton className="h-4 w-[100px]" /></TableCell>
+                <TableCell className="text-right">
+                  <div className="flex justify-end gap-2">
+                    {[...Array(2)].map((_, i) => (
+                      <Skeleton key={i} className="h-8 w-8" />
+                    ))}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     );
   }
 
   if (documents.length === 0) {
     return (
-      <div className="flex h-32 flex-col items-center justify-center rounded-lg border border-dashed text-center">
-        <p className="text-neutral-gray">No documents uploaded yet</p>
-        <p className="text-sm text-neutral-coolGray">Upload your first document to get started</p>
+      <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-300 bg-white/50 p-12 text-center">
+        <div className="rounded-full bg-primary/10 p-3 mb-4">
+          <Upload className="h-6 w-6 text-primary" />
+        </div>
+        <h3 className="text-lg font-semibold text-neutral-darkPurple mb-2">No documents uploaded</h3>
+        <p className="text-sm text-neutral-coolGray mb-6 max-w-sm">
+          Upload your first document to start analyzing your legal documents with AI
+        </p>
+        <Button variant="default" className="font-medium">
+          Upload Document
+        </Button>
       </div>
     );
   }
@@ -122,24 +157,31 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
             const statusConfig = getStatusConfig(doc.status);
             
             return (
-              <TableRow key={doc.id} className="group">
+              <TableRow 
+                key={doc.id} 
+                className="group transition-colors hover:bg-neutral-softGray/50"
+              >
                 <TableCell className="font-medium">{doc.name}</TableCell>
-                <TableCell>{doc.type}</TableCell>
+                <TableCell className="text-neutral-coolGray">{doc.type}</TableCell>
                 <TableCell>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Badge className={`inline-flex items-center gap-1 ${statusConfig.color}`}>
+                        <Badge 
+                          className={`inline-flex items-center gap-1 ${statusConfig.color} transition-colors`}
+                        >
                           <statusConfig.icon className="h-3 w-3" />
                           {doc.status}
                         </Badge>
                       </TooltipTrigger>
-                      <TooltipContent>{statusConfig.tooltip}</TooltipContent>
+                      <TooltipContent className="text-sm">{statusConfig.tooltip}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </TableCell>
                 <TableCell>{getRiskBadge(doc.risk_level)}</TableCell>
-                <TableCell>{new Date(doc.created_at).toLocaleDateString()}</TableCell>
+                <TableCell className="text-neutral-coolGray">
+                  {new Date(doc.created_at).toLocaleDateString()}
+                </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2 opacity-80 transition-opacity group-hover:opacity-100">
                     <TooltipProvider>
@@ -148,7 +190,7 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
                           <Button 
                             size="sm" 
                             variant="default"
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 bg-primary/90 hover:bg-primary"
                             disabled={doc.status !== 'analyzed'}
                           >
                             <FileText size={16} />
@@ -164,7 +206,7 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
                           <Button 
                             size="sm" 
                             variant="outline" 
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 hover:bg-neutral-softGray"
                           >
                             <Download size={16} />
                           </Button>
@@ -180,7 +222,7 @@ export const DocumentTable = ({ documents, loading }: DocumentTableProps) => {
                             <Button 
                               size="sm" 
                               variant="outline" 
-                              className="h-8 w-8 p-0"
+                              className="h-8 w-8 p-0 hover:bg-neutral-softGray"
                             >
                               <Edit size={16} />
                             </Button>
