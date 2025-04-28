@@ -1,79 +1,39 @@
 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { LanguageProvider } from "./context/LanguageContext";
-import { AuthProvider } from "./context/AuthContext";
-import { ProtectedRoute } from "./components/routes/ProtectedRoute";
+import { Toaster } from "./components/ui/sonner";
+import { ThemeProvider } from "./components/theme-provider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import Auth from "./pages/Auth";
+import { useEffect } from "react";
+import { LanguageProvider } from "./context/LanguageContext";
 import Dashboard from "./pages/Dashboard";
+import Auth from "./pages/Auth";
+import { AuthProvider } from "./context/AuthContext";
+import { ProtectedRoute } from "./components/routes/ProtectedRoute";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+function App() {
+  useEffect(() => {
+    document.documentElement.classList.add("scroll-smooth");
+  }, []);
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
+  return (
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <div className="min-h-screen bg-white text-black">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/templates" 
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/settings" 
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/help" 
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </div>
-          </BrowserRouter>
-        </TooltipProvider>
+        <AuthProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Router>
+          <Toaster position="bottom-right" />
+        </AuthProvider>
       </LanguageProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+    </ThemeProvider>
+  );
+}
 
 export default App;

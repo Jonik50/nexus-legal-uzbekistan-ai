@@ -47,9 +47,9 @@ export const AdvantagesSection = () => {
     window.dispatchEvent(new CustomEvent("download_pdf", { detail: { document: "comparison_report" } }));
   };
 
-  // Ensure the headers and rows are properly typed
-  const headers = t("advantages.table.headers") || [];
-  const rows = t("advantages.table.rows") || [];
+  // Ensure the headers and rows are arrays
+  const headers = Array.isArray(t("advantages.table.headers")) ? t("advantages.table.headers") : [];
+  const rows = Array.isArray(t("advantages.table.rows")) ? t("advantages.table.rows") : [];
 
   return (
     <section className="py-20 md:py-28 bg-gradient-to-b from-neutral-50 to-white relative" ref={sectionRef}>
@@ -58,10 +58,10 @@ export const AdvantagesSection = () => {
       
       <div className="container-custom relative z-10">
         <h2 className="animate-stagger section-title text-center">
-          {t("advantages.title")}
+          {t("advantages.title") || "Compare Legal Nexus AI with Traditional Solutions"}
         </h2>
         <p className="animate-stagger section-subtitle text-center">
-          {t("advantages.subtitle")}
+          {t("advantages.subtitle") || "See how our AI-powered solution compares to traditional legal research and document analysis methods"}
         </p>
 
         <div className="animate-stagger mt-16 overflow-x-auto">
@@ -69,7 +69,7 @@ export const AdvantagesSection = () => {
             <Table className="w-full min-w-[600px]">
               <TableHeader>
                 <TableRow className="bg-neutral-softGray">
-                  {Array.isArray(headers) && headers.map((header: string, index: number) => (
+                  {headers.map((header: string, index: number) => (
                     <TableHead
                       key={index}
                       className={`py-4 px-6 text-left font-bold ${
@@ -82,12 +82,12 @@ export const AdvantagesSection = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {Array.isArray(rows) && rows.map((row: string[], index: number) => (
+                {rows.map((row: string[], index: number) => (
                   <TableRow
                     key={index}
                     className={index % 2 === 0 ? "bg-white" : "bg-neutral-softGray/30"}
                   >
-                    {Array.isArray(row) && row.map((cell, cellIndex) => (
+                    {Array.isArray(row) ? row.map((cell, cellIndex) => (
                       <TableCell
                         key={cellIndex}
                         className={`py-4 px-6 ${
@@ -96,7 +96,7 @@ export const AdvantagesSection = () => {
                       >
                         {cell}
                       </TableCell>
-                    ))}
+                    )) : null}
                   </TableRow>
                 ))}
               </TableBody>
@@ -111,7 +111,7 @@ export const AdvantagesSection = () => {
             onClick={trackDownloadClick}
           >
             <Download className="w-4 h-4" />
-            {t("advantages.cta")}
+            {t("advantages.cta") || "Download Full Comparison Report"}
           </Button>
         </div>
       </div>

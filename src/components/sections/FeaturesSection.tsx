@@ -45,6 +45,9 @@ export const FeaturesSection = () => {
     { icon: Shield, color: "text-indigo-500", bg: "bg-indigo-100" },
   ];
 
+  // Ensure features is always an array
+  const features = Array.isArray(t("features.items")) ? t("features.items") : [];
+
   return (
     <section id="features" className="py-20 md:py-28 bg-gradient-to-b from-neutral-softGray to-white relative" ref={sectionRef}>
       {/* Background decoration */}
@@ -52,14 +55,14 @@ export const FeaturesSection = () => {
       
       <div className="container-custom relative z-10">
         <h2 className="animate-stagger section-title text-center">
-          {t("features.title")}
+          {t("features.title") || "Key Features"}
         </h2>
         <p className="animate-stagger section-subtitle text-center">
-          {t("features.subtitle")}
+          {t("features.subtitle") || "Powerful tools designed for Uzbekistan's legal landscape"}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
-          {t("features.items").map((feature: any, index: number) => {
+          {features.map((feature: any, index: number) => {
             const IconConfig = featureIcons[index % featureIcons.length];
             const Icon = IconConfig.icon;
             
@@ -71,8 +74,8 @@ export const FeaturesSection = () => {
                 <div className={`rounded-lg p-4 inline-block mb-5 ${IconConfig.bg} group-hover:scale-110 transition-transform duration-300`}>
                   <Icon className={`w-6 h-6 ${IconConfig.color}`} />
                 </div>
-                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                <p className="text-neutral-gray">{feature.description}</p>
+                <h3 className="text-xl font-bold mb-3">{feature.title || `Feature ${index + 1}`}</h3>
+                <p className="text-neutral-gray">{feature.description || ""}</p>
               </div>
             );
           })}

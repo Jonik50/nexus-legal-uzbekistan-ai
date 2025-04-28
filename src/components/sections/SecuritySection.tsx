@@ -48,10 +48,10 @@ export const SecuritySection = () => {
       
       <div className="container-custom relative z-10">
         <h2 className="animate-stagger section-title text-center">
-          {t("security.title")}
+          {t("security.title") || "Secure and Reliable Protection"}
         </h2>
         <p className="animate-stagger section-subtitle text-center">
-          {t("security.description")}
+          {t("security.description") || "Your data and documents are protected with state-of-the-art security measures"}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16">
@@ -66,8 +66,8 @@ export const SecuritySection = () => {
                   <Icon className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                  <p className="text-neutral-gray">{feature.description}</p>
+                  <h3 className="text-xl font-bold mb-3">{feature.title || ""}</h3>
+                  <p className="text-neutral-gray">{feature.description || ""}</p>
                 </div>
               </div>
             );

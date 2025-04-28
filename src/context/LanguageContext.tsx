@@ -23,6 +23,32 @@ const translations = {
   uz,
 };
 
+// Default fallbacks for common array structures to ensure consistent data
+const defaultFallbacks = {
+  features: {
+    items: [],
+    points: []
+  },
+  faq: {
+    items: []
+  },
+  testimonials: {
+    items: []
+  },
+  personas: {
+    items: []
+  },
+  advantages: {
+    table: {
+      headers: [],
+      rows: []
+    }
+  },
+  security: {
+    features: []
+  }
+};
+
 // Enhanced browser language detection with region support
 const detectBrowserLanguage = (): { lang: Language; region: Region } => {
   if (typeof window === "undefined") return { lang: "ru", region: "UZ" }; // Default when SSR
@@ -82,25 +108,47 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     window.dispatchEvent(new CustomEvent("lang_toggle", { detail: { language: lang } }));
   };
 
-  // Enhanced translation function with typography improvements for Russian
+  // Enhanced translation function with type safety and fallbacks
   const t = (key: string) => {
-    const keys = key.split(".");
-    let value = translations[language];
-    
-    for (const k of keys) {
-      if (value[k] === undefined) {
-        console.warn(`Missing translation key: ${key} for language: ${language}`);
-        return key;
+    try {
+      const keys = key.split(".");
+      let value = translations[language];
+      let currentPath = "";
+      
+      for (let i = 0; i < keys.length; i++) {
+        const k = keys[i];
+        currentPath += (currentPath ? "." : "") + k;
+        
+        if (value[k] === undefined) {
+          console.warn(`Missing translation key: ${currentPath} for language: ${language}`);
+          
+          // Try to use fallback for array structures
+          if (i === keys.length - 1) {
+            // We've reached the end of the path, check if we have a fallback
+            for (const [section, fallbacks] of Object.entries(defaultFallbacks)) {
+              if (currentPath.startsWith(section) && fallbacks[k] !== undefined) {
+                console.info(`Using fallback for ${currentPath}`);
+                return fallbacks[k];
+              }
+            }
+          }
+          
+          return key; // Return the key if no fallback is found
+        }
+        
+        value = value[k];
       }
-      value = value[k];
+      
+      // Apply Russian typography improvements for text strings only
+      if (language === "ru" && typeof value === "string") {
+        return formatRussianText(value);
+      }
+      
+      return value;
+    } catch (error) {
+      console.error(`Error retrieving translation for key: ${key}`, error);
+      return key; // Return the key as fallback
     }
-    
-    // Apply Russian typography improvements for text strings only
-    if (language === "ru" && typeof value === "string") {
-      return formatRussianText(value);
-    }
-    
-    return value;
   };
 
   // Format phone numbers according to region
