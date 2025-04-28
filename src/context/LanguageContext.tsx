@@ -1,98 +1,20 @@
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { Language, Region, LanguageContextType } from "@/types/language";
+import { detectBrowserLanguage } from "@/utils/languageDetection";
+import { useTranslation } from "@/hooks/useTranslation";
+import { useFormatting } from "@/hooks/useFormatting";
 import en from "../locales/en/index";
 import ru from "../locales/ru/index";
 import uz from "../locales/uz/index";
-import { formatRussianText } from "@/utils/typography";
 
-type Language = "en" | "ru" | "uz";
-type Region = "UZ" | "RU" | "OTHER";
-
-interface LanguageContextType {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  t: (key: string) => any;
-  region: Region;
-  formatPhone: (phone: string) => string;
-  formatDate: (date: Date | string) => string;
-}
-
-const translations = {
-  en,
-  ru,
-  uz,
-};
-
-// Default fallbacks for common array structures to ensure consistent data
-const defaultFallbacks = {
-  features: {
-    items: [],
-    points: []
-  },
-  faq: {
-    items: []
-  },
-  testimonials: {
-    items: []
-  },
-  personas: {
-    items: []
-  },
-  advantages: {
-    table: {
-      headers: [],
-      rows: []
-    }
-  },
-  security: {
-    features: []
-  },
-  cta: {
-    title: "Ready to optimize your legal work?",
-    description: "Join leading legal firms in Uzbekistan using Legal Nexus AI",
-    primary: "Try for free",
-    secondary: "Request demo"
-  }
-};
-
-// Enhanced browser language detection with region support
-const detectBrowserLanguage = (): { lang: Language; region: Region } => {
-  if (typeof window === "undefined") return { lang: "ru", region: "UZ" }; // Default when SSR
-  
-  // Detect language first
-  const navLang = navigator.language;
-  const lang = navLang.split("-")[0];
-  const detectedLang = (lang === "ru" || lang === "en" || lang === "uz" ? lang : "ru") as Language;
-  
-  // Detect region
-  const countryCode = navLang.includes("-") ? navLang.split("-")[1].toUpperCase() : "";
-  let detectedRegion: Region = "OTHER";
-  
-  if (countryCode === "UZ" || countryCode === "RU") {
-    detectedRegion = countryCode as Region;
-  } else {
-    // Try to get region from timezone as fallback
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (timezone === "Asia/Tashkent") {
-      detectedRegion = "UZ";
-    } else if (timezone.includes("Moscow") || timezone.includes("Petersburg")) {
-      detectedRegion = "RU";
-    }
-  }
-  
-  // If region is Uzbekistan but language isn't explicitly set, default to Russian
-  if (detectedRegion === "UZ" && !["uz", "ru"].includes(detectedLang)) {
-    return { lang: "ru", region: detectedRegion };
-  }
-  
-  return { lang: detectedLang, region: detectedRegion };
-};
+const translations = { en, ru, uz };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>("ru"); // Default to Russian
-  const [region, setRegion] = useState<Region>("UZ"); // Default to Uzbekistan
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [language, setLanguageState] = useState<Language>("ru");
+  const [region, setRegion] = useState<Region>("UZ");
   
   useEffect(() => {
     const storedLanguage = localStorage.getItem("language") as Language | null;
@@ -114,153 +36,8 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     window.dispatchEvent(new CustomEvent("lang_toggle", { detail: { language: lang } }));
   };
 
-  // Enhanced translation function with better type safety and fallbacks
-  const t = (key: string) => {
-    try {
-      if (!key) {
-        console.warn("Empty translation key requested");
-        return "";
-      }
-      
-      const keys = key.split(".");
-      let value = translations[language];
-      let currentPath = "";
-      
-      for (let i = 0; i < keys.length; i++) {
-        const k = keys[i];
-        currentPath += (currentPath ? "." : "") + k;
-        
-        if (value === undefined || value === null) {
-          console.warn(`Translation path broken at ${currentPath} for language: ${language}`);
-          
-          // Try fallbacks from other languages
-          for (const fallbackLang of ["en", "ru", "uz"].filter(l => l !== language)) {
-            let fallbackValue = translations[fallbackLang as Language];
-            let fallbackValid = true;
-            
-            // Try to follow the same path in the fallback language
-            for (let j = 0; j <= i; j++) {
-              if (fallbackValue && fallbackValue[keys[j]] !== undefined) {
-                fallbackValue = fallbackValue[keys[j]];
-              } else {
-                fallbackValid = false;
-                break;
-              }
-            }
-            
-            if (fallbackValid) {
-              console.info(`Using fallback from ${fallbackLang} for ${currentPath}`);
-              value = fallbackValue;
-              break;
-            }
-          }
-          
-          // If still undefined, check default fallbacks
-          if (value === undefined || value === null) {
-            // Check if we have a default fallback for this path
-            const topLevelKey = keys[0];
-            if (defaultFallbacks[topLevelKey]) {
-              let fallbackValue = defaultFallbacks[topLevelKey];
-              let fallbackPath = keys.slice(1);
-              
-              // Try to navigate the fallback object
-              for (const pathPart of fallbackPath) {
-                if (fallbackValue && fallbackValue[pathPart] !== undefined) {
-                  fallbackValue = fallbackValue[pathPart];
-                } else {
-                  fallbackValue = undefined;
-                  break;
-                }
-              }
-              
-              if (fallbackValue !== undefined) {
-                console.info(`Using default fallback for ${currentPath}`);
-                return fallbackValue;
-              }
-            }
-            
-            return key; // Last resort: return the key itself
-          }
-        }
-        
-        if (value[k] === undefined) {
-          console.warn(`Missing translation key: ${currentPath} for language: ${language}`);
-          
-          // Try to use fallback for array structures
-          if (i === keys.length - 1) {
-            // We've reached the end of the path, check if we have a fallback
-            for (const [section, fallbacks] of Object.entries(defaultFallbacks)) {
-              if (currentPath.startsWith(section) && fallbacks[k] !== undefined) {
-                console.info(`Using fallback for ${currentPath}`);
-                return fallbacks[k];
-              }
-            }
-          }
-          
-          return key; // Return the key if no fallback is found
-        }
-        
-        value = value[k];
-      }
-      
-      // Apply Russian typography improvements for text strings only
-      if (language === "ru" && typeof value === "string") {
-        return formatRussianText(value);
-      }
-      
-      return value;
-    } catch (error) {
-      console.error(`Error retrieving translation for key: ${key}`, error);
-      return key; // Return the key as fallback
-    }
-  };
-
-  // Format phone numbers according to region
-  const formatPhone = (phone: string): string => {
-    // Basic formatting for Uzbekistan: +998 XX XXX-XX-XX
-    if (!phone) return "";
-    
-    // Remove all non-digit characters
-    const digits = phone.replace(/\D/g, "");
-    
-    if (digits.startsWith("998") && digits.length === 12) {
-      return `+998 ${digits.slice(3, 5)} ${digits.slice(5, 8)}-${digits.slice(8, 10)}-${digits.slice(10, 12)}`;
-    }
-    
-    // Basic formatting for other numbers if can't format specifically
-    if (digits.length >= 10) {
-      return `+${digits.slice(0, digits.length - 10)} ${digits.slice(-10, -7)} ${digits.slice(-7, -4)}-${digits.slice(-4)}`;
-    }
-    
-    return phone; // Return original if can't format
-  };
-
-  // Format dates according to language preferences
-  const formatDate = (date: Date | string): string => {
-    if (!date) return "";
-    
-    const dateObj = typeof date === "string" ? new Date(date) : date;
-    
-    if (isNaN(dateObj.getTime())) {
-      return String(date); // Return original if invalid date
-    }
-    
-    try {
-      if (language === "ru") {
-        // Russian format: DD.MM.YYYY
-        return new Intl.DateTimeFormat("ru-RU").format(dateObj);
-      } else if (language === "uz") {
-        // Uzbek format: DD.MM.YYYY
-        return new Intl.DateTimeFormat("uz-UZ").format(dateObj);
-      } else {
-        // English format: MM/DD/YYYY
-        return new Intl.DateTimeFormat("en-US").format(dateObj);
-      }
-    } catch (error) {
-      console.error("Error formatting date:", error);
-      return String(date); // Fallback to original
-    }
-  };
+  const { t } = useTranslation(translations, language);
+  const { formatPhone, formatDate } = useFormatting(language);
 
   return (
     <LanguageContext.Provider value={{ 
