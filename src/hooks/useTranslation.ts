@@ -75,6 +75,7 @@ export const useTranslation = (
               if (Array.isArray(enResult)) {
                 return enResult;
               } else if (typeof enResult === 'object' && enResult !== null) {
+                // Convert objects to appropriate return types based on key naming
                 if (key.includes('.items') || key.includes('.points') || key.includes('.rows') || 
                     key.includes('.headers') || key.includes('.features') || key.includes('.clients')) {
                   return [];
