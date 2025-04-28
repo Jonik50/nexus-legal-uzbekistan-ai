@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -5,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { DocumentUpload } from "@/components/documents/DocumentUpload";
-import { DocumentList } from "@/components/documents/DocumentList";
+import { DocumentTable } from "@/components/documents/DocumentTable";
+import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
+  const [documents, setDocuments] = useState<any[]>([]);
   const [user, setUser] = useState<any>(null);
   const navigate = useNavigate();
 
@@ -21,7 +24,7 @@ const Dashboard = () => {
       }
       
       setUser(data.session.user);
-      setLoading(false);
+      fetchDocuments();
     });
 
     // Setup auth state listener
@@ -33,8 +36,51 @@ const Dashboard = () => {
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Subscribe to real-time updates for documents
+    const channel = supabase
+      .channel('document_updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'documents'
+        },
+        (payload) => {
+          if (payload.eventType === 'UPDATE') {
+            setDocuments(current =>
+              current.map(doc =>
+                doc.id === (payload.new as any).id ? { ...doc, ...(payload.new as any) } : doc
+              )
+            );
+          } else if (payload.eventType === 'INSERT') {
+            setDocuments(current => [...current, payload.new as any]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+      supabase.removeChannel(channel);
+    };
   }, [navigate]);
+
+  const fetchDocuments = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('documents')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setDocuments(data || []);
+    } catch (error: any) {
+      toast.error(error.message || 'Error fetching documents');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -46,7 +92,7 @@ const Dashboard = () => {
     }
   };
 
-  if (loading) {
+  if (loading && !user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-neutral-50">
         <div className="text-center">
@@ -58,59 +104,41 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-neutral-100">
-      <div className="container mx-auto px-4 py-8">
-        <header className="flex justify-between items-center mb-8">
+    <div className="min-h-screen flex bg-gradient-to-b from-white to-neutral-100">
+      {/* Sidebar */}
+      <DashboardSidebar />
+      
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <header className="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-darkPurple">Legal Nexus AI Dashboard</h1>
-            <p className="text-neutral-gray">Welcome back, {user?.email}</p>
+            <h1 className="text-xl font-bold text-neutral-darkPurple">Documents Dashboard</h1>
+            {user && (
+              <p className="text-sm text-neutral-gray">Welcome back, {user?.email}</p>
+            )}
           </div>
           <Button onClick={handleLogout} variant="outline">Logout</Button>
         </header>
-
-        <div className="mb-8">
-          <Card>
+        
+        {/* Content Area */}
+        <div className="flex-1 p-6">
+          {/* Upload Section */}
+          <Card className="mb-8">
             <CardHeader>
               <CardTitle>Upload Documents</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-neutral-gray mb-4">Upload your legal documents for analysis</p>
+              <p className="text-neutral-gray mb-4">Upload your legal documents for AI analysis</p>
               <DocumentUpload />
             </CardContent>
           </Card>
-        </div>
-
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Your Documents</h2>
-          <DocumentList />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Contract Analysis</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-neutral-gray mb-4">AI-powered contract analysis</p>
-              <Button className="w-full">Analyze Contract</Button>
-            </CardContent>
-          </Card>
           
-          <Card>
-            <CardHeader>
-              <CardTitle>Legal Templates</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-neutral-gray mb-4">Access to legal templates</p>
-              <Button className="w-full">View Templates</Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="mt-8">
-          <p className="text-sm text-neutral-gray text-center">
-            This is a simplified dashboard. More features will be implemented in future updates.
-          </p>
+          {/* Documents Table */}
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Your Documents</h2>
+            <DocumentTable documents={documents} loading={loading} />
+          </div>
         </div>
       </div>
     </div>
